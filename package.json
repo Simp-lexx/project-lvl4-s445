@@ -1,0 +1,61 @@
+{
+  "name": "sl-taskmanager",
+  "version": "0.0.1",
+  "description": "Task Manager",
+  "main": "dist/index.js",
+  "bin": {
+    "taskman": "dist/bin/taskman.js"
+  },
+  "scripts": {
+    "test": "jest",
+    "start": "gulp server",
+    "build": "npx webpack -p --env production",
+    "postinstall": "npm run build"
+  },
+  "engines": {
+    "node": ">=10"
+  },
+  "keywords": [
+    "task",
+    "manager",
+    "manage",
+    "tasks",
+    "management"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Simp-lexx/project-lvl4-s445.git"
+  },
+  "author": "Alexey Kovalenko",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Simp-lexx/project-lvl4-s445/issues"
+  },
+  "homepage": "https://github.com/Simp-lexx/project-lvl4-s445#readme",
+  "dependencies": {
+    "@babel/cli": "^7.4.4",
+    "@babel/core": "^7.4.4",
+    "@babel/node": "^7.2.2",
+    "@babel/preset-env": "^7.4.4",
+    "babel-eslint": "^10.0.1",
+    "babel-jest": "^24.7.1",
+    "eslint": "^5.16.0",
+    "eslint-config-airbnb-base": "^13.1.0",
+    "eslint-plugin-babel": "^5.3.0",
+    "eslint-plugin-import": "^2.17.2",
+    "eslint-plugin-jest": "^22.5.1",
+    "jest": "^24.7.1",
+    "jest-cli": "^24.7.1",
+    "rollbar": "^2.6.1",
+    "webpack": "^4.30.0",
+    "koa": "^2.7.0",
+    "koa-pug": "^3.0.0-2",
+    "koa-router": "^7.4.0",
+    "dotenv": "^7.0.0"
+  },
+  "devDependencies": {
+    "webpack-cli": "^3.3.1",
+    "supertest": "^4.0.2",
+    "nodemon": "^1.18.10"
+  }
+}
