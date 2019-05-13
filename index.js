@@ -37,8 +37,8 @@ router.get('/', async (ctx) => {
 app.use(router.routes());
 app.use(serve(path.join(__dirname, 'public')));
 
-app.listen(process.env.PORT || 5000, () => {
+/* app.listen(process.env.PORT || 8000, () => {
   console.log('App started');
-});
+}); */
 
 export default app;
