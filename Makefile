@@ -2,7 +2,8 @@ install:
 	npm install
 
 start:
-	nodemon --exec "npx babel-node -- index.js"
+	DEBUG="application:*" npx nodemon --watch .  --ext '.js' --exec npx gulp server
+	# nodemon --exec "npx babel-node -- index.js"
 
 publish:
 	npm publish
