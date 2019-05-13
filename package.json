@@ -9,7 +9,7 @@
   "scripts": {
     "test": "jest",
     "start": "gulp server",
-    "build": "npx webpack -p --env production",
+    "build": "npx webpack -p --env development",
     "postinstall": "npm run build"
   },
   "engines": {
@@ -55,6 +55,7 @@
     "jquery": "^3.4.1",
     "jshint": "^2.10.2",
     "koa": "^2.7.0",
+    "koa-bodyparser": "^4.2.1",
     "koa-pug": "^3.0.0-2",
     "koa-router": "^7.4.0",
     "koa-static": "^5.0.0",
