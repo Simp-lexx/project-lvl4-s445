@@ -2,11 +2,8 @@ install:
 	npm install
 
 start:
-	DEBUG="application:*" npx nodemon --watch .  --ext '.js' --exec npx gulp default
+	DEBUG="application:*" npx nodemon --watch .  --ext '.js' --exec npx gulp server
 	# nodemon --exec "npx babel-node -- index.js"
-
-publish:
-	npm publish
 
 lint:
 	npx eslint .

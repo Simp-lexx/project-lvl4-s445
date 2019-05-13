@@ -3,6 +3,7 @@ import Pug from 'koa-pug';
 import Rollbar from 'rollbar';
 import dotenv from 'dotenv';
 import Router from 'koa-router';
+import serve from 'koa-static';
 import path from 'path';
 
 dotenv.config();
@@ -34,6 +35,7 @@ router.get('/', async (ctx) => {
 });
 
 app.use(router.routes());
+app.use(serve(path.join(__dirname, 'public')));
 
 app.listen(process.env.PORT || 5000, () => {
   console.log('App started');
