@@ -27,7 +27,7 @@ module.exports = {
             options: {
               ident: 'postcss',
               plugins: [
-                require('autoprefixer'),
+                require('autoprefixer'), // eslint-disable-line global-require
               ],
             },
           },
