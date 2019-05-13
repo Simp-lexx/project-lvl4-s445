@@ -1,5 +1,1 @@
-import app from './bin';
-
-app.listen(5000, () => {
-  console.log('App started');
-});
+import 'bootstrap/dist/css/bootstrap.min.css';

@@ -22,8 +22,8 @@ app.use(async (ctx, next) => {
 const pug = new Pug({
   viewPath: path.join(__dirname, 'views'),
   debug: true,
-  pretty: false,
-  compileDebug: false,
+  pretty: true,
+  compileDebug: true,
   basedir: path.join(__dirname, 'views'),
 });
 pug.use(app);
@@ -34,5 +34,9 @@ router.get('/', async (ctx) => {
 });
 
 app.use(router.routes());
+
+app.listen(process.env.PORT || 5000, () => {
+  console.log('App started');
+});
 
 export default app;
