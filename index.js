@@ -9,15 +9,28 @@ import path from 'path';
 dotenv.config();
 
 const app = new Koa();
-const rollBar = new Rollbar(process.env.READ_RB_T);
+
+const rollbar = new Rollbar({
+  accessToken: process.env.READ_RB_T,
+  captureUncaught: true,
+  captureUnhandledRejections: true,
+});
+
+// record a generic message and send it to Rollbar
+rollbar.log('Hello world!');
+
 const router = new Router();
 
-app.use(async (ctx, next) => {
-  try {
-    await next();
-  } catch (e) {
-    rollBar.error(e, ctx.request);
-  }
+app.use(router.routes());
+app.use(serve(path.join(__dirname, 'public')));
+
+app.use(async (ctx) => {
+  ctx.body = 'welcome';
+});
+
+router.get('/', (ctx) => {
+  const data = { title: 'Welcome!', message: 'To the task manager' };
+  ctx.render('index', data);
 });
 
 const pug = new Pug({
@@ -29,13 +42,7 @@ const pug = new Pug({
 });
 pug.use(app);
 
-router.get('/', async (ctx) => {
-  const data = { title: 'Welcome!', message: 'To the task manager' };
-  await ctx.render('index', data);
-});
-
-app.use(router.routes());
-app.use(serve(path.join(__dirname, 'public')));
+app.use(rollBar.errorHandler());
 
 /* app.listen(process.env.PORT || 8000, () => {
   console.log('App started');

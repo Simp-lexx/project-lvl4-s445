@@ -8,6 +8,7 @@
   },
   "scripts": {
     "test": "jest",
+    "webpack": "webpack",
     "start": "gulp server",
     "build": "npx webpack -p --env development",
     "postinstall": "npm run build"
