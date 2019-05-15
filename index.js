@@ -6,6 +6,7 @@ import Router from 'koa-router';
 import serve from 'koa-static';
 import path from 'path';
 
+export default 
 dotenv.config();
 
 const app = new Koa();
@@ -42,7 +43,7 @@ const pug = new Pug({
 });
 pug.use(app);
 
-app.use(rollBar.errorHandler());
+app.use(rollbar.errorHandler());
 
 /* app.listen(process.env.PORT || 8000, () => {
   console.log('App started');

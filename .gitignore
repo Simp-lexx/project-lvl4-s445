@@ -4,5 +4,3 @@
 coverage
 .env
 /public/
-/.vscode/
-/public/assets/
