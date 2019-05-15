@@ -1,6 +1,7 @@
 /node_modules/
 *.log
-dist
+/dist/
 coverage
 .env
-public
+/public/
+/.vscode/
