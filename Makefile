@@ -9,7 +9,7 @@ pack:
 	npm run webpack --display-error-details
 
 lint:
-	npx eslint -- src test.
+	npx eslint .
 
 build:
 	rm -rf dist
