@@ -34,7 +34,6 @@ export default () => {
   app.use(router.allowedMethods());
 
   router.get('/', (ctx) => {
-    // const data = { title: 'TM', message: 'Welcome\n\n to the Task manager' };
     ctx.render('welcome/index');
   });
   const rollbar = new Rollbar({
@@ -55,7 +54,6 @@ export default () => {
   });
   pug.use(app);
 
-  // rollbar.init();
   app.use(rollbar.errorHandler(process.env.READ_RB_T));
   return app;
 };
