@@ -10,7 +10,7 @@
     "test": "jest",
     "webpack": "webpack",
     "start": "gulp server",
-    "build": "npx webpack -p --env development",
+    "build": "npx webpack -p --env production",
     "postinstall": "npm run build"
   },
   "engines": {
@@ -40,7 +40,7 @@
     "@babel/preset-env": "^7.4.4",
     "@babel/register": "^7.4.4",
     "babel-eslint": "^10.0.1",
-    "babel-jest": "^24.7.1",
+    "babel-jest": "^24.8.0",
     "babel-loader": "^8.0.6",
     "bootstrap": "^4.3.1",
     "dotenv": "^7.0.0",
@@ -50,27 +50,31 @@
     "eslint-plugin-import": "^2.17.2",
     "eslint-plugin-jest": "^22.5.1",
     "gulp": "^4.0.2",
-    "jest": "^24.7.1",
-    "jest-cli": "^24.7.1",
+    "jest": "^24.8.0",
+    "jest-cli": "^24.8.0",
     "jest-supertest-matchers": "0.0.2",
     "jquery": "^3.4.1",
     "jshint": "^2.10.2",
     "koa": "^2.7.0",
     "koa-bodyparser": "^4.2.1",
+    "koa-logger": "^3.2.0",
+    "koa-methodoverride": "^2.0.0",
     "koa-pug": "^3.0.0-2",
     "koa-router": "^7.4.0",
     "koa-static": "^5.0.0",
+    "koa-webpack": "^5.2.3",
     "popper.js": "^1.15.0",
     "rollbar": "^2.6.1",
-    "webpack": "^4.30.0"
-  },
-  "devDependencies": {
+    "sass-loader": "^7.1.0",
+    "webpack": "^4.30.0",
     "autoprefixer": "^9.5.1",
     "css-loader": "^2.1.1",
-    "nodemon": "^1.18.10",
     "postcss-loader": "^3.0.0",
     "style-loader": "^0.23.1",
     "supertest": "^4.0.2",
-    "webpack-cli": "^3.3.1"
+    "webpack-cli": "^3.3.2"
+  },
+  "devDependencies": {
+    "nodemon": "^1.18.10"
   }
 }

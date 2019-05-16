@@ -11,7 +11,7 @@ describe('requests', () => {
   });
 
   beforeEach(() => {
-    server = app().listen();
+    server = app().listen(process.env.PORT);
   });
 
   it('GET 200', async () => {
