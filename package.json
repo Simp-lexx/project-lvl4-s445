@@ -11,6 +11,7 @@
     "webpack": "webpack",
     "start": "gulp server",
     "build": "npx webpack -p --env production",
+    "dev": "npx webpack -p --env development",
     "postinstall": "npm run build"
   },
   "engines": {
@@ -39,10 +40,14 @@
     "@babel/node": "^7.2.2",
     "@babel/preset-env": "^7.4.4",
     "@babel/register": "^7.4.4",
+    "autoprefixer": "^9.5.1",
     "babel-eslint": "^10.0.1",
     "babel-jest": "^24.8.0",
     "babel-loader": "^8.0.6",
+    "babel-polyfill": "^6.26.0",
     "bootstrap": "^4.3.1",
+    "css-loader": "^2.1.1",
+    "debug": "^4.1.1",
     "dotenv": "^7.0.0",
     "eslint": "^5.16.0",
     "eslint-config-airbnb-base": "^13.1.0",
@@ -64,17 +69,16 @@
     "koa-static": "^5.0.0",
     "koa-webpack": "^5.2.3",
     "popper.js": "^1.15.0",
+    "postcss-loader": "^3.0.0",
     "rollbar": "^2.6.1",
     "sass-loader": "^7.1.0",
-    "webpack": "^4.30.0",
-    "autoprefixer": "^9.5.1",
-    "css-loader": "^2.1.1",
-    "postcss-loader": "^3.0.0",
     "style-loader": "^0.23.1",
     "supertest": "^4.0.2",
+    "webpack": "^4.30.0",
     "webpack-cli": "^3.3.2"
   },
   "devDependencies": {
-    "nodemon": "^1.18.10"
+    "nodemon": "^1.18.10",
+    "pug-lint": "^2.5.0"
   }
 }
