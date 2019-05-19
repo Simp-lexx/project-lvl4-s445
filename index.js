@@ -8,6 +8,8 @@ import bodyParser from 'koa-bodyparser';
 import koaLogger from 'koa-logger';
 import methodoverride from 'koa-methodoverride';
 import koaWebpack from 'koa-webpack';
+import session from 'koa-generic-session';
+import flash from 'koa-flash-simple';
 import path from 'path';
 
 import addRoutes from './routes';
@@ -24,12 +26,32 @@ export default () => {
   app.use(methodoverride());
   app.use(serve(path.join(__dirname, 'public')));
 
+  app.use(methodoverride((req) => {
+    if (req.body && typeof req.body === 'object' && '_method' in req.body) {
+      return req.body._method; // eslint-disable-line
+    }
+    return '';
+  }));
+
   if (process.env.NODE_ENV !== 'production') {
     koaWebpack({
       config: webpackConfig,
     }).then(m => app.use(m));
   }
 
+  app.keys = ['some black harrier'];
+  app.use(session(app));
+  app.use(flash);
+
+  app.use(async (ctx, next) => {
+    ctx.state = {
+      flash: ctx.flash,
+      isSignedIn: () => ctx.session.userId !== undefined,
+      signedId: () => ctx.session.userId,
+    };
+    await next();
+  });
+  
   const rollbar = new Rollbar(process.env.READ_RB_T);
 
   app.use(async (ctx, next) => {
