@@ -51,7 +51,7 @@ export default () => {
     };
     await next();
   });
-  
+
   const rollbar = new Rollbar(process.env.READ_RB_T);
 
   app.use(async (ctx, next) => {

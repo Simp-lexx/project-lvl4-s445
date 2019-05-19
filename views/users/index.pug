@@ -1,0 +1,20 @@
+extends /layouts/app.pug
+
+block content
+  if isSignedIn()
+    .row.justify-content-center.mt-4
+      .col-lg-4
+        table.table.table-stripped
+          h2.text-center.mb-4 Users
+            tr
+              th.text-center ID
+              th.text-center Full Name
+              th.text-center Email
+              th.text-center Created At
+          tbody
+            each user in users
+              tr
+                td.text-center= user.id
+                td.text-center= user.fullName || '-'
+                td.text-center= user.email
+                td.text-center= changeFormat(user.createdAt, 'DD/MM/YYYY')

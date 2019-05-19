@@ -1,0 +1,27 @@
+extends /layouts/application.pug
+
+block content
+  if isSignedIn()
+    .row.justify-content-center.align-items-center
+      .fa.fa-user-o.fa-5x
+      .col-lg-4
+        table.table
+          thead.thead-bordered
+            tr
+              th.text-center ID
+              th.text-center Email
+              th.text-center First Name
+              th.text-center Last Name
+              th.text-center createdAt
+              
+          tbody
+            tr
+              th.text-center(scope='row')= user.id
+              td.text-center= user.email
+              td.text-center= user.firstName
+              td.text-center= user.lastName
+              td.text-center= changeFormat(user.createdAt, 'DD/MM/YYYY')
+              
+      form(action=urlFor('delete user', { id: user.id }) method='post')     
+        .col-lg-4
+          button.btn.btn-danger(type='submit' name='_method' value='DELETE') Delete account
