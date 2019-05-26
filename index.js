@@ -11,6 +11,7 @@ import koaWebpack from 'koa-webpack';
 import session from 'koa-generic-session';
 import flash from 'koa-flash-simple';
 import path from 'path';
+import _ from 'lodash';
 
 import addRoutes from './routes';
 import webpackConfig from './webpack.config';
@@ -23,7 +24,6 @@ export default () => {
 
   app.use(bodyParser());
   app.use(koaLogger());
-  app.use(methodoverride());
   app.use(serve(path.join(__dirname, 'public')));
 
   app.use(methodoverride((req) => {
@@ -52,17 +52,6 @@ export default () => {
     await next();
   });
 
-  const rollbar = new Rollbar(process.env.READ_RB_T);
-
-  app.use(async (ctx, next) => {
-    try {
-      await next();
-    } catch (e) {
-      console.error(e, ctx.request);
-      rollbar.error(e, ctx.request); // rollbar.error
-    }
-  });
-
   const router = new Router();
   addRoutes(router, container);
   app.use(router.allowedMethods());
@@ -76,7 +65,22 @@ export default () => {
     compileDebug: true,
     locals: [],
     basedir: path.join(__dirname, 'views'),
+    helperPath: [
+      { _ },
+      { urlFor: (...args) => router.url(...args) },
+    ],
   });
   pug.use(app);
+
+  const rollbar = new Rollbar(process.env.READ_RB_T);
+
+  app.use(async (ctx, next) => {
+    try {
+      await next();
+    } catch (e) {
+      console.error(e, ctx.request);
+      rollbar.error(e, ctx.request); // rollbar.error
+    }
+  });
   return app;
 };
