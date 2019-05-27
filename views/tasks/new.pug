@@ -1,0 +1,11 @@
+extends /layouts/app.pug
+
+block content
+  h2.text-center.mt-3 Create new task
+  .form-group.col-lg-4.mt-3.mx-auto
+    form(action=urlFor('new task') method='post')
+      +input(f, 'name', 'fa fa-ticket fa-fw')
+      +select(f, 'assignedToId','fa fa-user-circle-o fa-fw', users)
+      +input(f, 'Tags', 'fa fa-tags fa-fw')
+      +textarea(f, 'description')
+      +button('Create')

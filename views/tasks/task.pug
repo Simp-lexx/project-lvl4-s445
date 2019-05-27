@@ -1,0 +1,74 @@
+extends /layouts/app.pug
+
+block content
+  h2.text-center.mt-3 Task
+  .form-group.col-lg-4.mt-3.mx-auto
+    table.table.table-stripped
+      tbody
+        tr
+          th
+            | ID
+          td.text-center= task.id
+        tr
+          th
+            | Name
+          td.text-center= task.name
+        tr
+          th
+            | Status
+          td.text-center= task.status            
+        tr
+          th
+            | Creator(id)
+          td.text-center= `${task.creator}(${task.creatorId})`
+        tr
+          th
+            | Assigned To
+          td.text-center= task.assignedTo
+        tr
+          th
+            | Description
+          td.text-center= task.description
+        tr
+          th
+            | createdAt
+          td.text-center= changeFormat(task.createdAt, 'DD/MM/YYYY')
+        tr
+          th
+            | Tags
+          td.text-center
+            form.form-inline(action=urlFor('tasks'))
+              each tag in tags
+                a.mr-2(href=urlFor('tag', { id: tag.id }))= tag.name
+              
+    form.form-inline.mx-auto.justify-content-center(action=urlFor('patch task', { id: task.id }), method='post')
+      - const value = f.object[property] === undefined ? '' : f.object[property]
+      .form-group(class=(f.errors[property] && 'has-danger'))
+        select(name='statusId' class='form-control' value=`${value}`)
+          each status in statuses
+            option(value= status.id)= status.name
+        input(type='hidden' name='_method' value='PATCH')
+        input(type='hidden' name='taskId' value= task.id)
+        button(class='btn btn-primary') Change status
+        
+  div.col-lg-8.justify-content-start.offset-md-2
+    form(action=urlFor(`new comment`, { id: task.id }) method='post' )
+      label(for='Comment') Comment
+      +textarea(f, 'content')
+      
+      button(type='submit' class='btn btn-warning')
+        i.fa.fa-comment-o.fa-1x(aria-hidden='true') 
+          span.ml-2 Add comment 
+          
+    table.table.table-stripped.mt-4
+      thead
+        tr
+          th.text-center Message
+          th.text-center Created by (id)
+          th.text-center Created At
+      tbody
+        each comment in comments
+          tr
+            td.text-center= comment.content
+            td.text-center= `${user.fullName} (${user.id})`
+            td.text-center= comment.createdAt

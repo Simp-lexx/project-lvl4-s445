@@ -2,21 +2,35 @@ import { encrypt } from '../lib/secure';
 
 export default (sequelize, DataTypes) => {
   const User = sequelize.define('User', {
-    firstName: DataTypes.STRING,
-    lastName: DataTypes.STRING,
+    firstName: {
+      type: DataTypes.STRING,
+      field: 'firstName',
+    },
+    lastName: {
+      type: DataTypes.STRING,
+      field: 'lastName',
+    },
     email: {
       type: DataTypes.STRING,
-      unique: true,
+      unique: {
+        args: true,
+        msg: 'This e-mail already in use.',
+      },
       validate: {
-        isEmail: true,
+        isEmail: {
+          args: true,
+          msg: 'Entered e-mail does not valid.',
+        },
       },
     },
+
     passwordDigest: {
       type: DataTypes.STRING,
       validate: {
         notEmpty: true,
       },
     },
+
     password: {
       type: DataTypes.VIRTUAL,
       set(value) {
@@ -25,18 +39,21 @@ export default (sequelize, DataTypes) => {
         return value;
       },
       validate: {
-        len: [1, +Infinity],
+        len: {
+          args: [6, +Infinity],
+          msg: 'The minimum password length is 6 characters.',
+        },
       },
     },
-  }, {
+  },
+
+  {
     getterMethods: {
       fullName() {
         return `${this.firstName} ${this.lastName}`;
       },
-      // associate(models) {
-      //   // associations can be defined here
-      // },
     },
   });
+
   return User;
 };
