@@ -2,11 +2,11 @@ extends /layouts/app.pug
 
 block content
   .row.justify-content-center.mt-4
-    form(method='GET', action=urlFor('new task'))
+    form(method='GET', action=urlFor('newTaskForm'))
       button(type='submit' class='btn btn-success btn-lg')
         i.fa.fa-ticket(aria-hidden='true') New Task         
   
-  form.form-inline.justify-content-center.mt-4(action=urlFor('tasks'))
+  form.form-inline.justify-content-center.mt-4(action=urlFor('tasksList'))
     button(type='submit' class='btn btn-warning' name='creatorId' value=signedId())
       i.fa.fa-ticket(aria-hidden='true') My tasks 
       
@@ -51,10 +51,10 @@ block content
               td.text-center= task.status
               td.text-center= task.assignedTo
               td.text-center= task.creator
-              td.text-center= changeFormat(task.createdAt, 'DD/MM/YYYY')
+              td.text-center= task.createdAt
               td.align-items-center
                 if task.creatorId == signedId()                  
-                  form(method='POST', action=urlFor('patch task', { id: task.id }))
+                  form(method='POST', action=urlFor('updateTask', { id: task.id }))
                     input(type='hidden', name='_method', value='DELETE')
                     button(type='submit' class='btn btn-danger')
                       i.fa.fa-trash-o(aria-hidden='true')

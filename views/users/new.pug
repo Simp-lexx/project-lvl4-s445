@@ -3,7 +3,7 @@ extends /layouts/app.pug
 block content
   h2.text-center.mt-3 Registration
   .form-group.col-lg-3.mt-3.mx-auto
-    form(action=urlFor('new user') method='post')
+    form(action=urlFor('newUserAdd') method='post')
       +input(f, 'email', 'fa fa-envelope-o fa-fw')
       +input(f, 'password', 'fa fa-key fa-fw', { as: 'password' })
       +input(f, 'firstName','fa fa-address-book-o fa-fw' )

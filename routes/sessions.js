@@ -1,8 +1,8 @@
 import buildFormObj from '../lib/formObjectBuilder';
 import { encrypt } from '../lib/secure';
-import { User } from '../models';
+// import { User } from '../models/User';
 
-export default (router) => {
+export default (router, { User }) => {
   router
     .get('newSession', '/session/new', async (ctx) => {
       const data = {};
@@ -17,11 +17,12 @@ export default (router) => {
       });
       if (user && user.passwordDigest === encrypt(password)) {
         ctx.session.userId = user.id;
-        ctx.redirect(router.url('root'));
+        ctx.flash.set('You Successfully Logged In.');
+        ctx.redirect(router.url('tasks'));
         return;
       }
 
-      ctx.flash.set('email or password were wrong');
+      ctx.flash.set('Wrong Email or Password Entered');
       ctx.render('sessions/new', { f: buildFormObj({ email }) });
     })
     .delete('session', '/session', (ctx) => {

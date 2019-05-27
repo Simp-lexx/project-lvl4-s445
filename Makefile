@@ -27,3 +27,9 @@ test-coverage:
 
 hlogs:
 	heroku logs --tail
+
+init:
+	npm run gulp init
+
+console:
+	npm run gulp console

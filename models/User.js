@@ -1,17 +1,18 @@
+import Sequelize from 'sequelize';
 import { encrypt } from '../lib/secure';
 
-export default (sequelize, DataTypes) => {
-  const User = sequelize.define('User', {
+export default (connect) => {
+  connect.define('User', {
     firstName: {
-      type: DataTypes.STRING,
+      type: Sequelize.STRING,
       field: 'firstName',
     },
     lastName: {
-      type: DataTypes.STRING,
+      type: Sequelize.STRING,
       field: 'lastName',
     },
     email: {
-      type: DataTypes.STRING,
+      type: Sequelize.STRING,
       unique: {
         args: true,
         msg: 'This e-mail already in use.',
@@ -25,14 +26,14 @@ export default (sequelize, DataTypes) => {
     },
 
     passwordDigest: {
-      type: DataTypes.STRING,
+      type: Sequelize.STRING,
       validate: {
         notEmpty: true,
       },
     },
 
     password: {
-      type: DataTypes.VIRTUAL,
+      type: Sequelize.VIRTUAL,
       set(value) {
         this.setDataValue('passwordDigest', encrypt(value));
         this.setDataValue('password', value);
@@ -45,15 +46,13 @@ export default (sequelize, DataTypes) => {
         },
       },
     },
-  },
-
-  {
+  }, {
     getterMethods: {
       fullName() {
         return `${this.firstName} ${this.lastName}`;
       },
     },
+    freezeTableName: true,
   });
-
-  return User;
+  // return User;
 };

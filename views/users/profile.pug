@@ -20,8 +20,8 @@ block content
               td.text-center= user.email
               td.text-center= user.firstName
               td.text-center= user.lastName
-              td.text-center= changeFormat(user.createdAt, 'DD/MM/YYYY')
+              td.text-center= user.createdAt
               
-      form(action=urlFor('delete user', { id: user.id }) method='post')     
+      form(action=urlFor('deleteUser', { id: user.id }) method='post')     
         .col-lg-4
           button.btn.btn-danger(type='submit' name='_method' value='DELETE') Delete account

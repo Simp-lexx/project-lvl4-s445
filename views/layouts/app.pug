@@ -16,33 +16,20 @@ html(lang="en")
             a.nav-link(href='/') Home
         ul.navbar-nav.float-right
           li.nav-item
-            a.nav-link(href='/login') Login
+          if isSignedIn()
+            a.nav-link(href=urlFor('session')) Log Out
           li.nav-item.dropdown
-            a.nav-link.dropdown-toggle(id='navbarDropdownMenuLink', data-toggle='dropdown', aria-haspopup='true', aria-expanded='false') Accounts
+            a.nav-link.dropdown-toggle(id='navbarDropdownMenuLink', data-toggle='dropdown', aria-haspopup='true', aria-expanded='false') Account
             .dropdown-menu(aria-labelledby='navbarDropdownMenuLink')
-              a.dropdown-item(href='#') Settings
-
-              if isSignedIn()
-            .col-4
-              .d-flex.justify-content-center
-                a.navbar-link.ml-2(href=urlFor('users list'))
-                  i.mr-1.fa.fa-users.fa-3x(aria-hidden='true')
-                  span.text-center Users 
-                a.navbar-link.ml-2(href=urlFor('tasks'))
-                  i.mr-1.fa.fa-list.fa-3x(aria-hidden='true')
-                  span.text-center Tasks                  
-                
-            .col-4
-              .d-flex.justify-content-end
-                nav.btn-group
-                  a.btn.btn-outline-primary(href=urlFor('profile', { id: signedId() })) Account
-                  a.btn.btn-outline-danger(href=urlFor('session') rel='nofollow' data-method='delete') Log Out
+              a.dropdown-item(href=urlFor('usersList')) Users List
+              a.dropdown-item(href=urlFor('tasksList')) Task List
+              a.dropdown-item(href=urlFor('userProfile', { id: signedId() })) Profile
           else
-            .col-8
-              .d-flex.justify-content-end
-                nav.btn-group
-                  a.btn.btn-outline-primary(href=urlFor('reg form')) Sign Up
-                  a.btn.btn-outline-success(href=urlFor('newSession')) Log In
+            a.nav-link(href=urlFor('newSession')) Log In
+            li.nav-item.dropdown
+              a.nav-link.dropdown-toggle(id='navbarDropdownMenuLink', data-toggle='dropdown', aria-haspopup='true', aria-expanded='false') New User
+              .dropdown-menu(aria-labelledby='navbarDropdownMenuLink')
+                a.dropdown-item(href=urlFor('newUserForm')) Sign Up
     .container
       - const msg = flash.get()
       if msg

@@ -1,5 +1,8 @@
-export default connect => connect.define('TaskTag', {
-}, {
-  freezeTableName: true,
-  timestamps: false,
-});
+export default (connect) => {
+  connect.define('TaskTag', {
+  }, {
+    freezeTableName: true,
+    timestamps: false,
+  });
+  // return TaskTag;
+};

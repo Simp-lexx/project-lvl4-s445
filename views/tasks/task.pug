@@ -32,16 +32,16 @@ block content
         tr
           th
             | createdAt
-          td.text-center= changeFormat(task.createdAt, 'DD/MM/YYYY')
+          td.text-center= task.createdAt
         tr
           th
             | Tags
           td.text-center
-            form.form-inline(action=urlFor('tasks'))
+            form.form-inline(action=urlFor('tasksList'))
               each tag in tags
                 a.mr-2(href=urlFor('tag', { id: tag.id }))= tag.name
               
-    form.form-inline.mx-auto.justify-content-center(action=urlFor('patch task', { id: task.id }), method='post')
+    form.form-inline.mx-auto.justify-content-center(action=urlFor('updateTask', { id: task.id }), method='post')
       - const value = f.object[property] === undefined ? '' : f.object[property]
       .form-group(class=(f.errors[property] && 'has-danger'))
         select(name='statusId' class='form-control' value=`${value}`)
@@ -52,7 +52,7 @@ block content
         button(class='btn btn-primary') Change status
         
   div.col-lg-8.justify-content-start.offset-md-2
-    form(action=urlFor(`new comment`, { id: task.id }) method='post' )
+    form(action=urlFor('newComment', { id: task.id }) method='post' )
       label(for='Comment') Comment
       +textarea(f, 'content')
       

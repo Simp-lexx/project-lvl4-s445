@@ -1,5 +1,5 @@
 export default (router) => {
-  router.get('/', (ctx) => {
+  router.get('root', '/', (ctx) => {
     ctx.render('welcome/index');
   });
 };
