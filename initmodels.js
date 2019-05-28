@@ -4,12 +4,12 @@ import getModels from './models';
 export default async () => {
   const models = getModels(connect);
 
-  await models.User.defint({ force: true });
-  await models.Status.define({ force: true });
-  await models.Task.define({ force: true });
-  await models.Tag.define({ force: true });
-  await models.TaskTag.define({ force: true });
-  await models.Comment.define({ force: true });
+  await models.User.sync({ force: true });
+  await models.Status.sync({ force: true });
+  await models.Task.sync({ force: true });
+  await models.Tag.sync({ force: true });
+  await models.TaskTag.sync({ force: true });
+  await models.Comment.sync({ force: true });
   await models.Status.bulkCreate([
     { name: 'New' },
     { name: 'In process' },
