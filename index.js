@@ -22,6 +22,26 @@ export default () => {
   dotenv.config();
   const rollbar = new Rollbar(process.env.READ_RB_T);
 
+  app.keys = ['some secret'];
+  app.use(session(app));
+  app.use(flash);
+  app.use(serve(path.join(__dirname, 'public')));
+
+  app.use(async (ctx, next) => {
+    ctx.state = {
+      flash: ctx.flash,
+      isSignedIn: () => ctx.session.userId !== undefined,
+      signedId: () => ctx.session.userId,
+    };
+    await next();
+  });
+
+  if (process.env.NODE_ENV !== 'production') {
+    koaWebpack({
+      config: webpackConfig,
+    }).then(m => app.use(m));
+  }
+
   app.use(bodyParser());
   app.use(koaLogger());
   app.use(methodoverride((req) => {
@@ -30,34 +50,9 @@ export default () => {
     }
     return '';
   }));
-  app.use(serve(path.join(__dirname, 'public')));
-
-  if (process.env.NODE_ENV !== 'production') {
-    koaWebpack({
-      config: webpackConfig,
-    }).then(m => app.use(m));
-  }
-
-  app.keys = ['some secret'];
-  app.use(session(app));
-  app.use(flash);
-
-  app.use(async (ctx, next) => {
-    try {
-      ctx.state = {
-        flash: ctx.flash,
-        isSignedIn: () => ctx.session.userId !== undefined,
-        signedId: () => ctx.session.userId,
-      };
-      await next();
-    } catch (e) {
-      console.error(e, ctx.request);
-      rollbar.error(e, ctx.request); // rollbar.error
-    }
-  });
 
   const router = new Router();
-  const isLoggedIn = async (ctx, next) => {
+  /* const isLoggedIn = async (ctx, next) => {
     if (ctx.session.userId) {
       await next();
       return;
@@ -65,18 +60,18 @@ export default () => {
     ctx.flash.set('Log In or Sign Up please.');
     ctx.redirect(router.url('newSession'));
   };
-  router.use('/tasks', isLoggedIn());
-
+  router.get('/tasks', isLoggedIn());
+ */
   addRoutes(router, container);
   app.use(router.allowedMethods());
   app.use(router.routes());
 
-  app.use(async (ctx) => {
+  /* app.use(async (ctx) => {
     if (ctx.status !== 404) {
       return;
     }
     ctx.redirect('/404');
-  });
+  }); */
 
   const pug = new Pug({
     viewPath: path.join(__dirname, 'views'),
@@ -91,6 +86,16 @@ export default () => {
       { urlFor: (...args) => router.url(...args) },
     ],
   });
+
+  app.use(async (ctx, next) => {
+    try {
+      await next();
+    } catch (e) {
+      console.error(e, ctx.request);
+      rollbar.error(e, ctx.request); // rollbar.error
+    }
+  });
+
   pug.use(app);
 
   return app;

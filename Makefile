@@ -33,3 +33,5 @@ init:
 
 console:
 	npm run gulp console
+
+.PHONY: test
