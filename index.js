@@ -16,6 +16,12 @@ import addRoutes from './routes';
 import webpackConfig from './webpack.config';
 import container from './container';
 
+const rollbar = new Rollbar({
+  accessToken: process.env.READ_RB_T,
+  captureUncaught: true,
+  captureUnhandledRejections: true,
+});
+
 export default () => {
   const app = new Koa();
 
@@ -69,7 +75,6 @@ export default () => {
     ],
   });
 
-  const rollbar = new Rollbar(process.env.READ_RB_T);
   app.use(async (ctx, next) => {
     try {
       await next();
