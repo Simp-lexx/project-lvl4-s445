@@ -29,7 +29,6 @@ export default (router, {
       const userId = Number(ctx.session.userId);
       const user = await User.findById(userId);
       const taskPromise = await Task.findById(taskId);
-      console.log(taskPromise);
       const task = await getData(taskPromise);
       const { tags } = task;
       const statuses = await Status.findAll();

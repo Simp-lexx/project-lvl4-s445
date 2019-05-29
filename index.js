@@ -1,7 +1,6 @@
 import Koa from 'koa';
 import Pug from 'koa-pug';
 import Rollbar from 'rollbar';
-import dotenv from 'dotenv';
 import Router from 'koa-router';
 import serve from 'koa-static';
 import bodyParser from 'koa-bodyparser';
@@ -19,9 +18,6 @@ import container from './container';
 
 export default () => {
   const app = new Koa();
-
-  dotenv.config();
-  const rollbar = new Rollbar(process.env.READ_RB_T);
 
   app.use(bodyParser());
   app.use(koaLogger());
@@ -73,12 +69,12 @@ export default () => {
     ],
   });
 
+  const rollbar = new Rollbar(process.env.READ_RB_T);
   app.use(async (ctx, next) => {
     try {
       await next();
     } catch (e) {
-      console.error(e, ctx.request);
-      rollbar.error(e, ctx.request); // rollbar.error
+      rollbar.error(e, ctx.request);
     }
   });
 
