@@ -24,11 +24,11 @@ html(lang="en")
               a.nav-link(href=urlFor('userProfile', { id: signedId() })) Profile
             li.nav-item
               a.nav-link(href=urlFor('session')) Log Out
-            else
-              li.nav-item
-                a.nav-link(href=urlFor('newSession')) Log In
-              li.nav-item
-                a.nav-link(href=urlFor('newUserForm')) Sign Up
+          else
+            li.nav-item
+              a.nav-link(href=urlFor('newSession')) Log In
+            li.nav-item
+              a.nav-link(href=urlFor('newUserForm')) Sign Up
  
     .container
       - const msg = flash.get()
