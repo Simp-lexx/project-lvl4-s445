@@ -15,15 +15,15 @@ html(lang="en")
           li.nav-item.active
             a.nav-link(href='/') Home
         ul.navbar-nav.float-right
-          li.nav-item
-            if isSignedIn()
+          if isSignedIn()
+            li.nav-item
+              a.nav-link(href=urlFor('usersList')) Users List
+            li.nav-item
+              a.nav-link(href=urlFor('tasksList')) Task List
+            li.nav-item
+              a.nav-link(href=urlFor('userProfile', { id: signedId() })) Profile
+            li.nav-item
               a.nav-link(href=urlFor('session')) Log Out
-                li.nav-item.dropdown
-                  a.nav-link.dropdown-toggle(id='navbarDropdownMenuLink', data-toggle='dropdown', aria-haspopup='true', aria-expanded='false') Account
-                    .dropdown-menu(aria-labelledby='navbarDropdownMenuLink')
-                      a.dropdown-item(href=urlFor('usersList')) Users List
-                      a.dropdown-item(href=urlFor('tasksList')) Task List
-                      a.dropdown-item(href=urlFor('userProfile', { id: signedId() })) Profile
             else
               li.nav-item
                 a.nav-link(href=urlFor('newSession')) Log In

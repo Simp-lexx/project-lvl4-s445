@@ -17,7 +17,7 @@ import webpackConfig from './webpack.config';
 import container from './container';
 
 const rollbar = new Rollbar({
-  accessToken: process.env.READ_RB_T,
+  accessToken: process.env.POST_SERVER_ITEM_ACCESS_TOKEN,
   captureUncaught: true,
   captureUnhandledRejections: true,
 });
