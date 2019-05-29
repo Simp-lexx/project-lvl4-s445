@@ -9,16 +9,19 @@ export default (router, { User }) => {
       ctx.render('sessions/new', { f: buildFormObj(data) });
     })
     .post('session', '/session', async (ctx) => {
+      console.log({ User });
       const { email, password } = ctx.request.body.form;
+      console.log({ email, password });
       const user = await User.findOne({
         where: {
           email,
         },
       });
+      console.log(user);
       if (user && user.passwordDigest === encrypt(password)) {
         ctx.session.userId = user.id;
         ctx.flash.set('You Successfully Logged In.');
-        ctx.redirect(router.url('tasks'));
+        ctx.redirect(router.url('tasksList'));
         return;
       }
 

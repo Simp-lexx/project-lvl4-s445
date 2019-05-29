@@ -2,7 +2,9 @@ import connect from './database';
 import getModels from './models';
 
 export default async () => {
+  console.log(connect);
   const models = getModels(connect);
+  console.log(models);
 
   await models.User.sync({ force: true });
   await models.Status.sync({ force: true });

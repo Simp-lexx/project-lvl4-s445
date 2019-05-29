@@ -1,7 +1,9 @@
 extends /layouts/app.pug
 
 block content
-  +formFor(f, { url: urlFor('session'), method: 'post' })
-    +input(f, 'email')
-    +input(f, 'password', { as: 'password' })
-    +button(f)
+  h2.text-center.mt-3 Authorization
+  .mt-3.form-group.col-lg-3.mx-auto
+    form(action=urlFor('session') method='post')
+      +input(f, 'email', 'fa fa-envelope-o fa-fw')
+      +input(f, 'password', 'fa fa-key fa-fw', { as: 'password' })
+      +button('Sign In')

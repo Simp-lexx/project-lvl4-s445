@@ -12,7 +12,6 @@
     "start": "gulp server",
     "gulp": "gulp",
     "build": "npx webpack -p --env production",
-    "dev": "npx webpack -p --env development",
     "postinstall": "npm run build"
   },
   "engines": {
@@ -74,14 +73,16 @@
     "koa-webpack": "^5.2.3",
     "lodash": "^4.17.11",
     "pg": "^7.11.0",
+    "pg-hstore": "^2.3.2",
     "popper.js": "^1.15.0",
     "postcss-loader": "^3.0.0",
     "rollbar": "^2.7.1",
     "sass-loader": "^7.1.0",
-    "sequelize": "^5.8.6",
+    "sequelize": "^5.8.7",
     "sequelize-cli": "^5.4.0",
     "style-loader": "^0.23.1",
     "supertest": "^4.0.2",
+    "umzug": "^2.2.0",
     "webpack": "^4.32.2",
     "webpack-cli": "^3.3.2"
   },

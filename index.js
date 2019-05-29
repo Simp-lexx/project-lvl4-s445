@@ -19,13 +19,30 @@ import container from './container';
 
 export default () => {
   const app = new Koa();
+
   dotenv.config();
   const rollbar = new Rollbar(process.env.READ_RB_T);
 
+  app.use(bodyParser());
+  app.use(koaLogger());
+  app.use(serve(path.join(__dirname, 'public')));
+
+  app.use(methodoverride((req) => {
+    if (req.body && typeof req.body === 'object' && '_method' in req.body) {
+      return req.body._method; // eslint-disable-line
+    }
+    return '';
+  }));
+
+  if (process.env.NODE_ENV !== 'test') {
+    koaWebpack({
+      config: webpackConfig,
+    }).then(m => app.use(m));
+  }
+
   app.keys = ['some secret'];
   app.use(session(app));
-  app.use(flash);
-  app.use(serve(path.join(__dirname, 'public')));
+  app.use(flash());
 
   app.use(async (ctx, next) => {
     ctx.state = {
@@ -36,51 +53,20 @@ export default () => {
     await next();
   });
 
-  if (process.env.NODE_ENV !== 'production') {
-    koaWebpack({
-      config: webpackConfig,
-    }).then(m => app.use(m));
-  }
-
-  app.use(bodyParser());
-  app.use(koaLogger());
-  app.use(methodoverride((req) => {
-    if (req.body && typeof req.body === 'object' && '_method' in req.body) {
-      return req.body._method; // eslint-disable-line
-    }
-    return '';
-  }));
-
   const router = new Router();
-  /* const isLoggedIn = async (ctx, next) => {
-    if (ctx.session.userId) {
-      await next();
-      return;
-    }
-    ctx.flash.set('Log In or Sign Up please.');
-    ctx.redirect(router.url('newSession'));
-  };
-  router.get('/tasks', isLoggedIn());
- */
+
   addRoutes(router, container);
   app.use(router.allowedMethods());
   app.use(router.routes());
 
-  /* app.use(async (ctx) => {
-    if (ctx.status !== 404) {
-      return;
-    }
-    ctx.redirect('/404');
-  }); */
-
   const pug = new Pug({
     viewPath: path.join(__dirname, 'views'),
-    basedir: path.join(__dirname, 'views'),
     noCache: process.env.NODE_ENV === 'development',
     debug: true,
     pretty: true,
     compileDebug: true,
     locals: [],
+    basedir: path.join(__dirname, 'views'),
     helperPath: [
       { _ },
       { urlFor: (...args) => router.url(...args) },

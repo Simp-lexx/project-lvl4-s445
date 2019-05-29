@@ -1,18 +1,19 @@
+// import path from 'path';
+// import webpack from 'webpack';
+
 const path = require('path');
 const webpack = require('webpack');
-
-// const path = require('path');
+const autoprefixer = require('autoprefixer');
 
 module.exports = {
   mode: process.env.NODE_ENV || 'development',
   entry: {
     app: ['./src'],
-    // vendor: ['babel-polyfill', 'jquery'],
   },
   output: {
     path: path.join(__dirname, 'public', 'assets'),
     filename: 'main.js',
-    publicPath: '/assets/',
+    publicPath: '/public/assets/',
   },
   module: {
     rules: [
@@ -23,19 +24,17 @@ module.exports = {
       },
       {
         test: /\.css$/,
-        use: [
-          'style-loader',
-          'css-loader',
-          {
-            loader: 'postcss-loader',
-            options: {
-              ident: 'postcss',
-              plugins: [
-                require('autoprefixer'), // eslint-disable-line global-require
-              ],
-            },
+        use: [{
+          loader: 'style-loader',
+        }, {
+          loader: 'css-loader',
+        }, {
+          loader: 'postcss-loader',
+          options: {
+            ident: 'postcss',
+            plugins: () => [autoprefixer],
           },
-        ],
+        }],
       },
     ],
   },
@@ -44,6 +43,7 @@ module.exports = {
       $: 'jquery',
       jQuery: 'jquery',
       'window.jQuery': 'jquery',
+      Popper: ['popper.js', 'default'],
     }),
   ],
 };

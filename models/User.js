@@ -1,58 +1,62 @@
 import Sequelize from 'sequelize';
 import { encrypt } from '../lib/secure';
 
-export default (connect) => {
-  connect.define('User', {
-    firstName: {
-      type: Sequelize.STRING,
-      field: 'firstName',
+export default connect => connect.define('User', {
+  email: {
+    type: Sequelize.STRING,
+    unique: {
+      args: true,
+      msg: 'This e-mail already in use.',
     },
-    lastName: {
-      type: Sequelize.STRING,
-      field: 'lastName',
-    },
-    email: {
-      type: Sequelize.STRING,
-      unique: {
+    validate: {
+      isEmail: {
         args: true,
-        msg: 'This e-mail already in use.',
+        msg: 'Entered e-mail does not valid.',
       },
-      validate: {
-        isEmail: {
-          args: true,
-          msg: 'Entered e-mail does not valid.',
-        },
+      notEmpty: {
+        args: true,
+        msg: 'Please enter the email',
       },
     },
+  },
 
-    passwordDigest: {
-      type: Sequelize.STRING,
-      validate: {
-        notEmpty: true,
-      },
+  passwordDigest: {
+    type: Sequelize.STRING,
+    validate: {
+      notEmpty: true,
     },
+  },
 
-    password: {
-      type: Sequelize.VIRTUAL,
-      set(value) {
-        this.setDataValue('passwordDigest', encrypt(value));
-        this.setDataValue('password', value);
-        return value;
-      },
-      validate: {
-        len: {
-          args: [6, +Infinity],
-          msg: 'The minimum password length is 6 characters.',
-        },
+  password: {
+    type: Sequelize.VIRTUAL,
+    set(value) {
+      this.setDataValue('passwordDigest', encrypt(value));
+      this.setDataValue('password', value);
+      return value;
+    },
+    validate: {
+      len: {
+        args: [6, +Infinity],
+        msg: 'The minimum password length is 6 characters.',
       },
     },
-  }, {
-    getterMethods: {
-      fullName() {
-        return `${this.firstName} ${this.lastName}`;
-      },
+  },
+
+  firstName: {
+    type: Sequelize.STRING,
+    field: 'firstName',
+  },
+
+  lastName: {
+    type: Sequelize.STRING,
+    field: 'lastName',
+  },
+
+}, {
+  getterMethods: {
+    fullName: function fullName() {
+      return `${this.firstName} ${this.lastName}`;
     },
-    freezeTableName: true,
-  });
-  // return User;
-};
+  },
+  freezeTableName: true,
+});

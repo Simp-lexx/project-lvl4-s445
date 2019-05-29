@@ -51,7 +51,7 @@ export default (router, {
           .then(async result => (result ? task.addTag(result)
             : task.createTag({ name: tag }))));
         ctx.flash.set('Task Successully Added.');
-        ctx.redirect(router.url('tasks'));
+        ctx.redirect(router.url('tasksList'));
       } catch (e) {
         rollbar.handleError(e);
         ctx.render('tasks/new', { f: buildFormObj(task, e), users });
@@ -69,6 +69,6 @@ export default (router, {
         where: { id: taskId },
       });
       ctx.flash.set('Task Succesfully Deleted.');
-      ctx.redirect(router.url('tasks'));
+      ctx.redirect(router.url('tasksList'));
     });
 };
