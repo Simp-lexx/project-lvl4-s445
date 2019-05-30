@@ -3,9 +3,7 @@ import rollbar from 'rollbar';
 import buildFormObj from '../lib/formObjectBuilder';
 import { getData, getParams } from '../lib/tools';
 
-export default (router, {
-  User, Task, Status, Tag,
-}) => {
+export default (router, { User, Task, Status, Tag }) => {
   router
     .get('newTaskForm', '/tasks/new', async (ctx) => {
       const task = Task.build();
@@ -27,8 +25,8 @@ export default (router, {
     .get('task', '/tasks/:id', async (ctx) => {
       const taskId = Number(ctx.params.id);
       const userId = Number(ctx.session.userId);
-      const user = await User.findById(userId);
-      const taskPromise = await Task.findById(taskId);
+      const user = await User.findByPk(userId);
+      const taskPromise = await Task.findByPk(taskId);
       const task = await getData(taskPromise);
       const { tags } = task;
       const statuses = await Status.findAll();
@@ -39,11 +37,12 @@ export default (router, {
         });
     })
     .post('addNewTask', '/tasks/new', async (ctx) => {
-      const { form } = ctx.request.body;
-      form.creatorId = ctx.session.userId;
+      const { request: { body: form } } = ctx;
+      const { userId } = ctx.session;
+      form.form.creatorId = userId;
       const users = await User.findAll();
-      const tags = form.Tags.split(' ');
-      const task = Task.build(form);
+      const tags = form.form.Tags.split(' ');
+      const task = await Task.build(form.form);
       try {
         await task.save();
         tags.map(tag => Tag.findOne({ where: { name: tag } })
@@ -58,7 +57,7 @@ export default (router, {
     })
     .patch('updateTask', '/tasks/:id', async (ctx) => {
       const { statusId, taskId } = ctx.request.body;
-      const task = await Task.findById(Number(taskId));
+      const task = await Task.findByPk(Number(taskId));
       task.setStatus(Number(statusId));
       ctx.redirect(`/tasks/${taskId}`);
     })

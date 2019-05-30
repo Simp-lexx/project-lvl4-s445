@@ -20,11 +20,10 @@ export default (router, { User }) => {
         ctx.redirect(router.url('tasksList'));
         return;
       }
-
       ctx.flash.set('Wrong Email or Password Entered');
       ctx.render('sessions/new', { f: buildFormObj({ email }) });
     })
-    .delete('session', '/session', (ctx) => {
+    .delete('session', '/session', async (ctx) => {
       ctx.session = {};
       ctx.redirect(router.url('root'));
     });

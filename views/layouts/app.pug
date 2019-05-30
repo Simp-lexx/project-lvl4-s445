@@ -23,7 +23,7 @@ html(lang="en")
             li.nav-item
               a.nav-link(href=urlFor('userProfile', { id: signedId() })) Profile
             li.nav-item
-              a.nav-link(href=urlFor('session')) Log Out
+              a.nav-link(href=urlFor('session') data-method='delete' rel='nofollow') Log Out
           else
             li.nav-item
               a.nav-link(href=urlFor('newSession')) Log In

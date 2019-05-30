@@ -23,7 +23,7 @@ export default (router, { User }) => {
     })
     .get('userProfile', '/users/:id/profile', async (ctx) => {
       const id = Number(ctx.params.id);
-      const user = await User.findById(id);
+      const user = await User.findByPk(id);
       ctx.render('users/profile', { user });
     })
     .delete('deleteUser', '/users/:id', async (ctx) => {

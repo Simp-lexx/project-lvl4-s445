@@ -14,8 +14,6 @@ export default (connect) => {
     TaskTag: getTaskTag(connect),
     Comment: getComment(connect),
   };
-  console.log(models.User);
-
   models.User.hasMany(models.Task, { foreignKey: 'creatorId', as: 'creator' });
   models.User.hasMany(models.Task, { foreignKey: 'assignedToId', as: 'assignedTo' });
   models.User.hasMany(models.Comment);
