@@ -3,7 +3,9 @@ import rollbar from 'rollbar';
 import buildFormObj from '../lib/formObjectBuilder';
 import { getData, getParams } from '../lib/tools';
 
-export default (router, { User, Task, Status, Tag }) => {
+export default (router, {
+  User, Task, Status, Tag,
+}) => {
   router
     .get('newTaskForm', '/tasks/new', async (ctx) => {
       const task = Task.build();
