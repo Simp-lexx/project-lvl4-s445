@@ -1,6 +1,6 @@
 {
   "name": "sl-taskmanager",
-  "version": "0.0.1",
+  "version": "1.0.1",
   "description": "Task Manager",
   "main": "dist/index.js",
   "bin": {
@@ -87,6 +87,7 @@
     "webpack-cli": "^3.3.2"
   },
   "devDependencies": {
+    "faker": "^4.1.0",
     "nodemon": "^1.19.1",
     "pug-lint": "^2.5.0",
     "sqlite3": "^4.0.8"

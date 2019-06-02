@@ -1,11 +1,15 @@
 - const getInputName = (f, property) => `${f.name}[${property}]`
 
-mixin input(f, property, image, options = { as: 'text' }) 
+mixin formFor(f, form_class, options = {})
+  form(action=_.get(options, 'url') class=`${form_class}` method=_.get(options, 'method', 'get'))
+    block
+
+mixin input(f, property, image, options = { as: 'text', label: '' }) 
   - const value = f.object[property] === undefined ? '' : f.object[property]
     .input-group.margin-bottom-sm(class=(f.errors[property] && 'has-danger'))    
       span.input-group-addon
         i(aria-hidden='true' class=`${image}`)
-      input(name=getInputName(f, property) class='form-control' type=options['as'] value=`${value}` placeholder=`${property}`)
+      input(name=getInputName(f, property) class='form-control' type=options['as'] id=options['label'] value=`${value}` placeholder=`${property}`)
     if f.errors[property]
       .form-control-feedback= f.errors[property].map(({ message }) => message).join('. ')
 
@@ -34,7 +38,27 @@ mixin select(f, property, image, users)
         option(value= user.id)= user.fullName
     if f.errors[property]
       .form-control-feedback= f.errors[property].map(({ message }) => message).join('. ')
+
+mixin smallField(options = { label: '', value: '' })
+  .row.my-3
+    .col-3.text-nowrap.py-1
+        b.text-muted=options['label']
+    .col-9.text-nowrap.card.card-outline-secondary.py-1= options['value']
         
 mixin button(value, type = 'submit')
   .mt-3.form-group
     input(class='btn btn-outline-success btn-block' type=`${type}` value=`${value}`)
+
+mixin editButton(options = { target: '', id: 0, label: '' })
+  .col-4
+    form(action=urlFor(`${options['target']}`, {id: options['id']}) method='get')
+      button.btn.btn-block.btn-warning(type='submit')= options['label']
+
+mixin deleteButton(options = { target: '', id: 0, label: '' })
+  .col-4
+    form(action=urlFor(`${options['target']}`, {id: options['id']}) method='post')
+      button.btn.btn-block.btn-danger(type='submit' name='_method' value='delete' data-confirm="Are you sure?")= options['label']
+
+mixin confirmButton(f, button_label = 'Ok', options = { method: 'get' })
+  .col-4
+    button.btn.btn-block.btn-success(type='submit' name='_method' value=`${options['method']}`)= button_label

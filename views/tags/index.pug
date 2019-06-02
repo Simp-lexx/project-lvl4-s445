@@ -19,7 +19,7 @@ block content
             tr
               td.text-center= task.id
               td.text-center
-                a(href=urlFor('tasksList', { id: task.id }))= task.name
+                a(href=urlFor('tasks#list', { id: task.id }))= task.name
               td.text-center= task.status
               td.text-center= task.assignedTo
               td.text-center= task.creator

@@ -3,11 +3,11 @@ import { encrypt } from '../lib/secure';
 
 export default (router, { User }) => {
   router
-    .get('newSession', '/session/new', async (ctx) => {
+    .get('sessions#new', '/sessions/new', async (ctx) => {
       const data = {};
       ctx.render('sessions/new', { f: buildFormObj(data) });
     })
-    .post('session', '/session', async (ctx) => {
+    .post('sessions#create', '/sessions', async (ctx) => {
       const { email, password } = ctx.request.body.form;
       const user = await User.findOne({
         where: {
@@ -17,13 +17,13 @@ export default (router, { User }) => {
       if (user && user.passwordDigest === encrypt(password)) {
         ctx.session.userId = user.id;
         ctx.flash.set('You Successfully Logged In.');
-        ctx.redirect(router.url('tasksList'));
+        ctx.redirect(router.url('tasks#list'));
         return;
       }
       ctx.flash.set('Wrong Email or Password Entered');
       ctx.render('sessions/new', { f: buildFormObj({ email }) });
     })
-    .delete('session', '/session', async (ctx) => {
+    .delete('sessions#destroy', '/sessions', async (ctx) => {
       ctx.session = {};
       ctx.redirect(router.url('root'));
     });

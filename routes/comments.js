@@ -2,7 +2,7 @@ import buildFormObj from '../lib/formObjectBuilder';
 
 export default (router, { Comment }) => {
   router
-    .post('newComment', '/tasks/:id/comments/new', async (ctx) => {
+    .post('comments#new', '/tasks/:id/comments/new', async (ctx) => {
       const { form } = ctx.request.body;
       form.TaskId = Number(ctx.params.id);
       form.UserId = ctx.session.userId;

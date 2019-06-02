@@ -17,18 +17,18 @@ html(lang="en")
         ul.navbar-nav.float-right
           if isSignedIn()
             li.nav-item
-              a.nav-link(href=urlFor('usersList')) Users List
+              a.nav-link(href=urlFor('users#list')) Users List
             li.nav-item
-              a.nav-link(href=urlFor('tasksList')) Task List
+              a.nav-link(href=urlFor('tasks#list')) Task List
             li.nav-item
-              a.nav-link(href=urlFor('userProfile', { id: signedId() })) Profile
+              a.nav-link(href=urlFor('users#profile', { id: signedId() })) Profile
             li.nav-item
-              a.nav-link(href=urlFor('session') data-method='delete' rel='nofollow') Log Out
+              a.nav-link(href=urlFor('sessions#destroy') data-method='delete' rel='nofollow') Log Out
           else
             li.nav-item
-              a.nav-link(href=urlFor('newSession')) Log In
+              a.nav-link(href=urlFor('sessions#new')) Log In
             li.nav-item
-              a.nav-link(href=urlFor('newUserForm')) Sign Up
+              a.nav-link(href=urlFor('users#new')) Sign Up
  
     .container
       - const msg = flash.get()
