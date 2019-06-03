@@ -2,7 +2,7 @@ import { getData } from '../lib/tools';
 
 export default (router, { Tag }) => {
   router
-    .get('tag', '/tags/:id', async (ctx) => {
+    .get('tags#view', '/tags/:id', async (ctx) => {
       const id = Number(ctx.params.id);
       const tag = await Tag.findByPk(id);
       const filteredTasks = await tag.getTasks();

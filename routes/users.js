@@ -29,9 +29,9 @@ export default (router, { User }) => {
     })
     .get('users#edit', '/users/:id/edit', async (ctx) => {
       const { id } = ctx.params;
-      console.log(id);
+      // console.log(id);
       const user = await User.findByPk(Number(id));
-      console.log(user);
+      // console.log(user);
       ctx.render('users/edit', { f: buildFormObj(user), id });
     })
     .patch('users#update', '/users/:id', async (ctx) => {

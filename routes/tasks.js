@@ -13,9 +13,9 @@ export default (router, {
       ctx.render('tasks/new', { f: buildFormObj(task), users });
     })
     .get('tasks#list', '/tasks', async (ctx) => {
-      console.log(ctx.request.url);
+      // console.log(ctx.request.url);
       const { query } = url.parse(ctx.request.url, true);
-      console.log(query);
+      // console.log(query);
       const where = getParams(query);
       // console.log(where);
       const filteredTasks = await Task.findAll({ where });
@@ -29,7 +29,7 @@ export default (router, {
         users, tasks, statuses, tags,
       });
     })
-    .get('task', '/tasks/:id', async (ctx) => {
+    .get('tasks#view', '/tasks/:id', async (ctx) => {
       const taskId = Number(ctx.params.id);
       const userId = Number(ctx.session.userId);
       const user = await User.findByPk(userId);
@@ -45,12 +45,12 @@ export default (router, {
     })
     .post('tasks#new', '/tasks/new', async (ctx) => {
       const { request: { body: form } } = ctx;
-      console.log({ request: { body: form } });
+      // console.log({ request: { body: form } });
       const { userId } = ctx.session;
-      console.log(userId);
+      // console.log(userId);
       form.form.creatorId = userId;
-      console.log(form.form.creatorId);
-      console.log(form.form);
+      // console.log(form.form.creatorId);
+      // console.log(form.form);
       const users = await User.findAll();
       const tags = form.form.Tags.split(' ');
       const task = await Task.build(form.form);

@@ -39,7 +39,7 @@ block content
           td.text-center
             form.form-inline(action=urlFor('tasks#list'))
               each tag in tags
-                a.mr-2(href=urlFor('tag', { id: tag.id }))= tag.name
+                a.mr-2(href=urlFor('tags#view', { id: tag.id }))= tag.name
               
     form.form-inline.mx-auto.justify-content-center(action=urlFor('tasks#update', { id: task.id }), method='post')
       - const value = f.object[property] === undefined ? '' : f.object[property]

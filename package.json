@@ -11,7 +11,7 @@
     "webpack": "webpack",
     "start": "gulp server",
     "gulp": "gulp",
-    "build": "npx webpack -p --env production",
+    "build": "npx webpack -p",
     "postinstall": "npm run build"
   },
   "engines": {
@@ -60,6 +60,7 @@
     "jest-cli": "^24.8.0",
     "jest-supertest-matchers": "0.0.2",
     "jquery": "^3.4.1",
+    "jquery-ujs": "^1.2.2",
     "jshint": "^2.10.2",
     "koa": "^2.7.0",
     "koa-bodyparser": "^4.2.1",
@@ -88,8 +89,8 @@
   },
   "devDependencies": {
     "faker": "^4.1.0",
+    "mysql2": "^1.6.5",
     "nodemon": "^1.19.1",
-    "pug-lint": "^2.5.0",
-    "sqlite3": "^4.0.8"
+    "pug-lint": "^2.5.0"
   }
 }

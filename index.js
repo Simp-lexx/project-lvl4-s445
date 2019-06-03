@@ -17,7 +17,7 @@ import webpackConfig from './webpack.config';
 import container from './container';
 
 const rollbar = new Rollbar({
-  accessToken: process.env.POST_SERVER_ITEM_ACCESS_TOKEN,
+  accessToken: process.env.ROLLBAR_TOKEN,
   captureUncaught: true,
   captureUnhandledRejections: true,
 });
@@ -58,8 +58,17 @@ export default () => {
   const router = new Router();
 
   addRoutes(router, container);
-  app.use(router.allowedMethods());
   app.use(router.routes());
+  app.use(router.allowedMethods());
+
+  app.use(async (ctx) => {
+    if (ctx.status !== 404) {
+      return;
+    }
+    // console.log(ctx.state);
+    ctx.throw(404);
+    ctx.redirect('/404');
+  });
 
   const pug = new Pug({
     viewPath: path.join(__dirname, 'views'),

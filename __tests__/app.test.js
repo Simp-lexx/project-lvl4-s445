@@ -81,6 +81,12 @@ describe('Standart requests testing', () => {
       .get('/wrong-path');
     expect(res).toHaveHTTPStatus(404);
   });
+
+  afterAll((done) => {
+    server.close();
+    userId = 0;
+    done();
+  });
 });
 
 describe('Tests User Create, Log On & Log Off', () => {
@@ -235,7 +241,7 @@ describe('Tests Users CRUD', () => {
   });
 });
 
-describe('Tasks CRUD', () => {
+/* describe('Tasks CRUD', () => {
   beforeAll(async () => {
     superagent = request.agent(server);
     userId += 1;
@@ -412,10 +418,10 @@ describe('Tasks CRUD', () => {
     taskId = 0;
     done();
   });
-});
+}); */
 
 
-describe('Tasks Filtration', () => {
+/* describe('Tasks Filtration', () => {
   const user1 = testUser(userId += 1);
   const user2 = testUser(userId += 2);
   const task1 = testTask(taskId += 1);
@@ -606,4 +612,4 @@ describe('Tasks Filtration', () => {
     server.close();
     done();
   });
-});
+}); */
