@@ -37,6 +37,10 @@ import matchers from 'jest-supertest-matchers';
 import faker from 'faker';
 
 import app from '..';
+import getModels from '../models';
+import connect from '../database';
+
+const models = getModels(connect);
 
 const testUser = id => ({
   id,
@@ -84,7 +88,6 @@ describe('Standart requests testing', () => {
 
   afterAll((done) => {
     server.close();
-    userId = 0;
     done();
   });
 });
@@ -92,15 +95,15 @@ describe('Standart requests testing', () => {
 describe('Tests User Create, Log On & Log Off', () => {
   beforeAll(() => {
     superagent = request.agent(server);
-    console.log(superagent);
+    // console.log(superagent);
     userId += 1;
     user = testUser(userId);
-    console.log(user);
+    // console.log(user);
   });
 
   it('Test User Create', async () => {
     await superagent
-      .post('/users/new')
+      .post('/users')
       .type('form')
       .send({
         form: {
@@ -133,14 +136,21 @@ describe('Tests User Create, Log On & Log Off', () => {
       .set('content-type', 'application/x-www-form-urlencoded')
       .expect(302);
   });
+
+  afterAll((done) => {
+    // console.log(userId);
+    server.close();
+    done();
+  });
 });
 
 describe('Tests Users CRUD', () => {
   beforeAll(async () => {
     userId += 1;
+    // console.log(userId);
     user = testUser(userId);
     await superagent
-      .post('/users/new')
+      .post('/users')
       .type('form')
       .send({
         form:
@@ -153,8 +163,12 @@ describe('Tests Users CRUD', () => {
       })
       .set('Connection', 'keep-alive')
       .set('user-agent', user.userAgent)
-      .set('content-type', 'application/x-www-form-urlencoded')
-      .post('/sessions/new')
+      .set('content-type', 'application/x-www-form-urlencoded');
+  });
+
+  it('Test Successfully Read Users List For Logged In User', async () => {
+    await superagent
+      .post('/sessions')
       .type('form')
       .send({
         form: {
@@ -162,11 +176,10 @@ describe('Tests Users CRUD', () => {
           password: user.password,
         },
       })
+      .set('Connection', 'keep-alive')
       .set('user-agent', user.userAgent)
       .set('content-type', 'application/x-www-form-urlencoded');
-  });
-
-  it('Test Successfully Read Users List For Logged In User', async () => {
+    console.log(user);
     const response = await superagent
       .get('/users')
       .set('user-agent', user.userAgent)
@@ -177,6 +190,11 @@ describe('Tests Users CRUD', () => {
   });
 
   it('Test Failed Read Users List For Not Logged In User', async () => {
+    await superagent
+      .delete('/sessions')
+      .set('user-agent', user.userAgent)
+      .set('content-type', 'application/x-www-form-urlencoded');
+    console.log(user);
     const response = await superagent
       .get('/users')
       .set('user-agent', user.userAgent)
@@ -185,8 +203,27 @@ describe('Tests Users CRUD', () => {
   });
 
   it('Test Successfully Read Own Profile For Logged In User', async () => {
+    await superagent
+      .post('/sessions')
+      .type('form')
+      .send({
+        form: {
+          email: user.email,
+          password: user.password,
+        },
+      })
+      .set('Connection', 'keep-alive')
+      .set('user-agent', user.userAgent)
+      .set('content-type', 'application/x-www-form-urlencoded');
+    const email = `${user.email}`;
+    const userDb = await models.User.findOne({
+      where: {
+        email,
+      },
+    });
+    const userDbId = userDb.id;
     const response = await superagent
-      .get(`/users/${user.id}/profile`)
+      .get(`/users/${userDbId}/profile`)
       .set('user-agent', user.userAgent)
       .set('x-test-auth-token', user.email)
       .set('Connection', 'keep-alive');
@@ -195,10 +232,29 @@ describe('Tests Users CRUD', () => {
   });
 
   it('Test Edit Own User Profile', async () => {
+    await superagent
+      .post('/sessions')
+      .type('form')
+      .send({
+        form: {
+          email: user.email,
+          password: user.password,
+        },
+      })
+      .set('Connection', 'keep-alive')
+      .set('user-agent', user.userAgent)
+      .set('content-type', 'application/x-www-form-urlencoded');
+    const email = `${user.email}`;
+    const userDb = await models.User.findOne({
+      where: {
+        email,
+      },
+    });
+    const userDbId = userDb.id;
     user.firstName = 'EditedFirstName';
     user.lastName = 'EditedLastName';
     await superagent
-      .patch(`/users/${user.id}`)
+      .patch(`/users/${userDbId}`)
       .type('form')
       .send({
         form:
@@ -215,7 +271,7 @@ describe('Tests Users CRUD', () => {
       .set('accept', 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8')
       .expect(302);
     const response = await superagent
-      .get(`/users/${user.id}`)
+      .get(`/users/${userDbId}/profile`)
       .set('user-agent', user.userAgent)
       .set('x-test-auth-token', user.email)
       .set('Connection', 'keep-alive');
@@ -224,8 +280,27 @@ describe('Tests Users CRUD', () => {
   });
 
   it('Test Successfully Delete Own User Profile', async () => {
+    await superagent
+      .post('/sessions')
+      .type('form')
+      .send({
+        form: {
+          email: user.email,
+          password: user.password,
+        },
+      })
+      .set('Connection', 'keep-alive')
+      .set('user-agent', user.userAgent)
+      .set('content-type', 'application/x-www-form-urlencoded');
+    const email = `${user.email}`;
+    const userDb = await models.User.findOne({
+      where: {
+        email,
+      },
+    });
+    const userDbId = userDb.id;
     const response = await superagent
-      .delete(`/users/${user.id}`)
+      .delete(`/users/${userDbId}`)
       .set('user-agent', user.userAgent)
       .set('x-test-auth-token', user.email)
       .set('Connection', 'keep-alive');
@@ -236,7 +311,6 @@ describe('Tests Users CRUD', () => {
 
   afterAll((done) => {
     server.close();
-    userId = 0;
     done();
   });
 });
