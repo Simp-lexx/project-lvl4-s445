@@ -9,6 +9,7 @@ export default (router, { User }) => {
       ctx.render('sessions/new', { f: buildFormObj(data) });
     })
     .post('sessions#create', '/sessions', async (ctx) => {
+      console.log(ctx.request);
       const { email, password } = ctx.request.body.form;
       // console.log(email, password);
       const user = await User.findOne({

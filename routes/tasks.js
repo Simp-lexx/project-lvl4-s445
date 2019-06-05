@@ -8,26 +8,31 @@ export default (router, {
 }) => {
   router
     .get('tasks#new', '/tasks/new', async (ctx) => {
-      const task = Task.build();
-      const users = await User.findAll();
-      ctx.render('tasks/new', { f: buildFormObj(task), users });
+      if (ctx.state.isSignedIn()) {
+        const task = Task.build();
+        const users = await User.findAll();
+        ctx.render('tasks/new', { f: buildFormObj(task), users });
+      } else {
+        ctx.flash.set('Please Log In For Access to This page');
+        ctx.redirect(router.url('sessions#new'));
+      }
     })
     .get('tasks#list', '/tasks', async (ctx) => {
-      // console.log(ctx.request.url);
-      const { query } = url.parse(ctx.request.url, true);
-      // console.log(query);
-      const where = getParams(query);
-      // console.log(where);
-      const filteredTasks = await Task.findAll({ where });
-      // console.log(filteredTasks);
-      const tasks = await Promise.all(filteredTasks.map(async task => getData(task)));
-      // console.log(tasks);
-      const tags = await Tag.findAll();
-      const statuses = await Status.findAll();
-      const users = await User.findAll();
-      ctx.render('tasks/index', {
-        users, tasks, statuses, tags,
-      });
+      if (ctx.state.isSignedIn()) {
+        const { query } = url.parse(ctx.request.url, true);
+        const where = getParams(query);
+        const filteredTasks = await Task.findAll({ where });
+        const tasks = await Promise.all(filteredTasks.map(async task => getData(task)));
+        const tags = await Tag.findAll();
+        const statuses = await Status.findAll();
+        const users = await User.findAll();
+        ctx.render('tasks/index', {
+          users, tasks, statuses, tags,
+        });
+      } else {
+        ctx.flash.set('Please Log In For Access to This page');
+        ctx.redirect(router.url('sessions#new'));
+      }
     })
     .get('tasks#view', '/tasks/:id', async (ctx) => {
       const taskId = Number(ctx.params.id);
@@ -43,16 +48,20 @@ export default (router, {
           f: buildFormObj(task), user, task, statuses, tags, comments,
         });
     })
-    .post('tasks#new', '/tasks/new', async (ctx) => {
+    .post('tasks#create', '/tasks', async (ctx) => {
+      // console.log(ctx);
+      console.log(ctx.session);
       const { request: { body: form } } = ctx;
-      // console.log({ request: { body: form } });
+      console.log({ request: { body: form } });
       const { userId } = ctx.session;
-      // console.log(userId);
+      console.log(userId);
       form.form.creatorId = userId;
-      // console.log(form.form.creatorId);
-      // console.log(form.form);
+      console.log(form.form.creatorId);
+      console.log(form.form);
       const users = await User.findAll();
+      console.log(users);
       const tags = form.form.Tags.split(' ');
+      console.log(tags);
       const task = await Task.build(form.form);
       try {
         await task.save();

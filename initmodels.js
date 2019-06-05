@@ -2,9 +2,22 @@ import connect from './database';
 import getModels from './models';
 
 export default async () => {
-  console.log(connect);
   const models = getModels(connect);
-  console.log(models);
+
+  /* await models.reverse().forEach((model) => {
+    model.drop().success(() => {
+      console.log(`success model:${model}`);
+    }).error((error) => {
+      console.log(`model:${model} error:${error}`);
+    });
+  }); */
+
+  await models.Comment.drop();
+  await models.TaskTag.drop();
+  await models.Tag.drop();
+  await models.Task.drop();
+  await models.Status.drop();
+  await models.User.drop();
 
   await models.User.sync({ force: true });
   await models.Status.sync({ force: true });

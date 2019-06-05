@@ -69,9 +69,7 @@ export default (router, { User }) => {
     })
     .delete('users#delete', '/users/:id', async (ctx) => {
       if (ctx.state.isSignedIn()) {
-        console.log(ctx.state.signedId());
         const userId = Number(ctx.params.id);
-        console.log(userId);
         if (ctx.state.isSignedIn() && ctx.state.signedId() === userId) {
           User.destroy({
             where: { userId },

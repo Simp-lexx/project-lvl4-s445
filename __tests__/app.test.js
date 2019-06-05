@@ -39,6 +39,7 @@ import faker from 'faker';
 import app from '..';
 import getModels from '../models';
 import connect from '../database';
+import init from '../initmodels';
 
 const models = getModels(connect);
 
@@ -57,10 +58,6 @@ const testTask = id => ({
   description: faker.random.words(11),
 });
 
-/* const createUser = (func, user) => {
-
-} */
-
 let server;
 let userId = 0;
 let taskId = 0;
@@ -71,6 +68,13 @@ let task;
 beforeAll(() => {
   expect.extend(matchers);
   server = app().listen(process.env.PORT);
+});
+
+afterAll((done) => {
+  userId = 0;
+  taskId = 0;
+  server.close();
+  done();
 });
 
 describe('Standart requests testing', () => {
@@ -95,10 +99,8 @@ describe('Standart requests testing', () => {
 describe('Tests User Create, Log On & Log Off', () => {
   beforeAll(() => {
     superagent = request.agent(server);
-    // console.log(superagent);
     userId += 1;
     user = testUser(userId);
-    // console.log(user);
   });
 
   it('Test User Create', async () => {
@@ -138,7 +140,6 @@ describe('Tests User Create, Log On & Log Off', () => {
   });
 
   afterAll((done) => {
-    // console.log(userId);
     server.close();
     done();
   });
@@ -147,7 +148,6 @@ describe('Tests User Create, Log On & Log Off', () => {
 describe('Tests Users CRUD', () => {
   beforeAll(async () => {
     userId += 1;
-    // console.log(userId);
     user = testUser(userId);
     await superagent
       .post('/users')
@@ -179,7 +179,6 @@ describe('Tests Users CRUD', () => {
       .set('Connection', 'keep-alive')
       .set('user-agent', user.userAgent)
       .set('content-type', 'application/x-www-form-urlencoded');
-    console.log(user);
     const response = await superagent
       .get('/users')
       .set('user-agent', user.userAgent)
@@ -194,7 +193,6 @@ describe('Tests Users CRUD', () => {
       .delete('/sessions')
       .set('user-agent', user.userAgent)
       .set('content-type', 'application/x-www-form-urlencoded');
-    console.log(user);
     const response = await superagent
       .get('/users')
       .set('user-agent', user.userAgent)
@@ -304,24 +302,28 @@ describe('Tests Users CRUD', () => {
       .set('user-agent', user.userAgent)
       .set('x-test-auth-token', user.email)
       .set('Connection', 'keep-alive');
-    expect(response).toHaveHTTPStatus(200);
+    expect(response).toHaveHTTPStatus(302);
     expect(response.text.includes(user.firstName)).toBeFalsy();
   });
 
-
   afterAll((done) => {
+    userId = 0;
+    taskId = 0;
     server.close();
     done();
   });
 });
 
-/* describe('Tasks CRUD', () => {
+describe('Tasks CRUD', () => {
   beforeAll(async () => {
+    userId = 1;
+    taskId = 1;
+    await init();
     superagent = request.agent(server);
-    userId += 1;
-    taskId += 1;
     user = testUser(userId);
+    console.log(user);
     task = testTask(taskId);
+    console.log(task);
     await superagent
       .post('/users')
       .type('form')
@@ -341,6 +343,18 @@ describe('Tests Users CRUD', () => {
 
 
   it('Test Successfully Read Tasks List when User Logged In', async () => {
+    await superagent
+      .post('/sessions')
+      .type('form')
+      .send({
+        form: {
+          email: user.email,
+          password: user.password,
+        },
+      })
+      .set('Connection', 'keep-alive')
+      .set('user-agent', user.userAgent)
+      .set('content-type', 'application/x-www-form-urlencoded');
     const response = await superagent
       .get('/tasks')
       .set('user-agent', user.userAgent)
@@ -351,6 +365,10 @@ describe('Tests Users CRUD', () => {
   });
 
   it('Test Fail Read Tasks List when User Not Logged In', async () => {
+    await superagent
+      .delete('/sessions')
+      .set('user-agent', user.userAgent)
+      .set('content-type', 'application/x-www-form-urlencoded');
     const response = await superagent
       .get('/tasks')
       .set('user-agent', user.userAgent)
@@ -359,6 +377,26 @@ describe('Tests Users CRUD', () => {
   });
 
   it('Test Successfully Create Task', async () => {
+    console.log(user, user.id);
+    await superagent
+      .post('/sessions')
+      .type('form')
+      .send({
+        form: {
+          email: user.email,
+          password: user.password,
+        },
+      })
+      .set('Connection', 'keep-alive')
+      .set('user-agent', user.userAgent)
+      .set('content-type', 'application/x-www-form-urlencoded');
+    // const email = `${user.email}`;
+    /* const userDb = await models.User.findOne({
+      where: {
+        email,
+      },
+    });
+    const userDbId = userDb.id; */
     await superagent
       .post('/tasks')
       .type('form')
@@ -375,6 +413,7 @@ describe('Tests Users CRUD', () => {
       .set('x-test-auth-token', user.email)
       .set('Connection', 'keep-alive')
       .expect(302);
+    console.log(task.id);
     const response = await superagent
       .get(`/tasks/${task.id}`)
       .set('user-agent', user.userAgent)
@@ -385,18 +424,25 @@ describe('Tests Users CRUD', () => {
   });
 
   it('Test Successfully Edit Task', async () => {
-    task.name = 'New Task Name';
+    await superagent
+      .post('/sessions')
+      .type('form')
+      .send({
+        form: {
+          email: user.email,
+          password: user.password,
+        },
+      })
+      .set('Connection', 'keep-alive')
+      .set('user-agent', user.userAgent)
+      .set('content-type', 'application/x-www-form-urlencoded');
     await superagent
       .patch(`/tasks/${task.id}`)
       .type('form')
       .send({
         form:
           {
-            name: task.name,
-            tags: 'xxx',
-            description: task.description,
-            assignedToId: user.id,
-            statusId: 1,
+            statusId: 2,
           },
         taskId: task.id,
       })
@@ -410,67 +456,22 @@ describe('Tests Users CRUD', () => {
       .set('x-test-auth-token', user.email)
       .set('Connection', 'keep-alive');
     expect(response).toHaveHTTPStatus(200);
-    expect(response.text.includes(task.name)).toBeTruthy();
+    expect(response.text.includes('In progress')).toBeTruthy();
   });
 
-  it('Update task status - Success', async () => {
+  it('Test Successfully Delete Task', async () => {
     await superagent
-      .patch(`/tasks/${task.id}`)
+      .post('/sessions')
       .type('form')
       .send({
-        form:
-          {
-            name: task.name,
-            tags: 'xxx',
-            description: task.description,
-            assignedToId: user.id,
-            statusId: 3,
-          },
-        taskId: task.id,
+        form: {
+          email: user.email,
+          password: user.password,
+        },
       })
-      .set('user-agent', user.userAgent)
-      .set('x-test-auth-token', user.email)
       .set('Connection', 'keep-alive')
-      .expect(302);
-    const response = await superagent
-      .get(`/tasks/${task.id}`)
       .set('user-agent', user.userAgent)
-      .set('x-test-auth-token', user.email)
-      .set('Connection', 'keep-alive');
-    expect(response).toHaveHTTPStatus(200);
-    expect(response.text.includes('Testing')).toBeTruthy();
-  });
-
-  it('Reassign task - Success', async () => {
-    const user2 = testUser(7);
-    await superagent
-      .patch(`/tasks/${task.id}`)
-      .type('form')
-      .send({
-        form:
-          {
-            name: task.name,
-            tags: 'xxx',
-            description: task.description,
-            assignedToId: user2.id,
-            statusId: 1,
-          },
-        taskId: task.id,
-      })
-      .set('user-agent', user.userAgent)
-      .set('x-test-auth-token', user.email)
-      .set('Connection', 'keep-alive')
-      .expect(302);
-    const response = await superagent
-      .get(`/tasks/${task.id}`)
-      .set('user-agent', user.userAgent)
-      .set('x-test-auth-token', user.email)
-      .set('Connection', 'keep-alive');
-    expect(response).toHaveHTTPStatus(200);
-    expect(response.text.includes(user2.firstName)).toBeTruthy();
-  });
-
-  it('Delete task - Success', async () => {
+      .set('content-type', 'application/x-www-form-urlencoded');
     await superagent
       .delete(`/tasks/${task.id}`)
       .set('user-agent', user.userAgent)
@@ -482,7 +483,7 @@ describe('Tests Users CRUD', () => {
       .set('user-agent', user.userAgent)
       .set('x-test-auth-token', user.email)
       .set('Connection', 'keep-alive');
-    expect(response).toHaveHTTPStatus(200);
+    expect(response).toHaveHTTPStatus(302);
     expect(response.text.includes(task.id)).toBeFalsy();
   });
 
@@ -492,10 +493,9 @@ describe('Tests Users CRUD', () => {
     taskId = 0;
     done();
   });
-}); */
+});
 
-
-/* describe('Tasks Filtration', () => {
+describe('Tasks Filtration', () => {
   const user1 = testUser(userId += 1);
   const user2 = testUser(userId += 2);
   const task1 = testTask(taskId += 1);
@@ -535,7 +535,7 @@ describe('Tests Users CRUD', () => {
       .set('Connection', 'keep-alive')
       .set('content-type', 'application/x-www-form-urlencoded');
     await superagent
-      .post('/tasks')
+      .post('/tasks/new')
       .type('form')
       .send({
         form:
@@ -550,7 +550,7 @@ describe('Tests Users CRUD', () => {
       .set('x-test-auth-token', user2.email)
       .set('Connection', 'keep-alive');
     await superagent
-      .post('/tasks')
+      .post('/tasks/new')
       .type('form')
       .send({
         form:
@@ -565,7 +565,7 @@ describe('Tests Users CRUD', () => {
       .set('x-test-auth-token', user1.email)
       .set('Connection', 'keep-alive');
     await superagent
-      .post('/tasks')
+      .post('/tasks/new')
       .type('form')
       .send({
         form:
@@ -575,23 +575,6 @@ describe('Tests Users CRUD', () => {
           description: task3.description,
           assignedToId: user2.id,
         },
-      })
-      .set('user-agent', user2.userAgent)
-      .set('x-test-auth-token', user2.email)
-      .set('Connection', 'keep-alive');
-    await superagent
-      .patch(`/tasks/${task3.id}`)
-      .type('form')
-      .send({
-        form:
-          {
-            name: task2.name,
-            tags: 'ddd',
-            description: task2.description,
-            assignedToId: user2.id,
-            statusId: 3,
-          },
-        taskId: task2.id,
       })
       .set('user-agent', user2.userAgent)
       .set('x-test-auth-token', user2.email)
@@ -686,4 +669,4 @@ describe('Tests Users CRUD', () => {
     server.close();
     done();
   });
-}); */
+});
