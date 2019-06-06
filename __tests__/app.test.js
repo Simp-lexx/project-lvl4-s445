@@ -321,9 +321,7 @@ describe('Tasks CRUD', () => {
     await init();
     superagent = request.agent(server);
     user = testUser(userId);
-    console.log(user);
     task = testTask(taskId);
-    console.log(task);
     await superagent
       .post('/users')
       .type('form')
@@ -377,7 +375,6 @@ describe('Tasks CRUD', () => {
   });
 
   it('Test Successfully Create Task', async () => {
-    console.log(user, user.id);
     await superagent
       .post('/sessions')
       .type('form')
@@ -390,13 +387,6 @@ describe('Tasks CRUD', () => {
       .set('Connection', 'keep-alive')
       .set('user-agent', user.userAgent)
       .set('content-type', 'application/x-www-form-urlencoded');
-    // const email = `${user.email}`;
-    /* const userDb = await models.User.findOne({
-      where: {
-        email,
-      },
-    });
-    const userDbId = userDb.id; */
     await superagent
       .post('/tasks')
       .type('form')
@@ -404,16 +394,15 @@ describe('Tasks CRUD', () => {
         form:
         {
           name: task.name,
-          tags: 'xxx',
-          description: task.description,
           assignedToId: user.id,
+          Tags: 'xxx',
+          description: task.description,
         },
       })
       .set('user-agent', user.userAgent)
       .set('x-test-auth-token', user.email)
       .set('Connection', 'keep-alive')
       .expect(302);
-    console.log(task.id);
     const response = await superagent
       .get(`/tasks/${task.id}`)
       .set('user-agent', user.userAgent)
@@ -440,10 +429,7 @@ describe('Tasks CRUD', () => {
       .patch(`/tasks/${task.id}`)
       .type('form')
       .send({
-        form:
-          {
-            statusId: 2,
-          },
+        statusId: 2,
         taskId: task.id,
       })
       .set('user-agent', user.userAgent)
@@ -456,7 +442,7 @@ describe('Tasks CRUD', () => {
       .set('x-test-auth-token', user.email)
       .set('Connection', 'keep-alive');
     expect(response).toHaveHTTPStatus(200);
-    expect(response.text.includes('In progress')).toBeTruthy();
+    expect(response.text.includes('In process')).toBeTruthy();
   });
 
   it('Test Successfully Delete Task', async () => {
@@ -483,8 +469,8 @@ describe('Tasks CRUD', () => {
       .set('user-agent', user.userAgent)
       .set('x-test-auth-token', user.email)
       .set('Connection', 'keep-alive');
-    expect(response).toHaveHTTPStatus(302);
-    expect(response.text.includes(task.id)).toBeFalsy();
+    expect(response).toHaveHTTPStatus(200);
+    expect(response.text.includes(task.name)).toBeFalsy();
   });
 
   afterAll((done) => {
@@ -496,13 +482,24 @@ describe('Tasks CRUD', () => {
 });
 
 describe('Tasks Filtration', () => {
-  const user1 = testUser(userId += 1);
-  const user2 = testUser(userId += 2);
-  const task1 = testTask(taskId += 1);
-  const task2 = testTask(taskId += 2);
-  const task3 = testTask(taskId += 3);
+  let user1;
+  let user2;
+  let task1;
+  let task2;
+  let task3;
 
   beforeAll(async () => {
+    await init();
+    user1 = testUser(userId = 1);
+    console.log(user1);
+    user2 = testUser(userId = 2);
+    console.log(user2);
+    task1 = testTask(taskId = 1);
+    console.log(task1);
+    task2 = testTask(taskId = 2);
+    console.log(task2);
+    task3 = testTask(taskId = 3);
+    console.log(task3);
     superagent = request.agent(server);
     await superagent
       .post('/users')
@@ -535,46 +532,80 @@ describe('Tasks Filtration', () => {
       .set('Connection', 'keep-alive')
       .set('content-type', 'application/x-www-form-urlencoded');
     await superagent
-      .post('/tasks/new')
+      .post('/sessions')
+      .type('form')
+      .send({
+        form: {
+          email: user1.email,
+          password: user1.password,
+        },
+      })
+      .set('Connection', 'keep-alive')
+      .set('user-agent', user1.userAgent)
+      .set('content-type', 'application/x-www-form-urlencoded');
+    await superagent
+      .post('/tasks')
       .type('form')
       .send({
         form:
         {
           name: task1.name,
-          tags: 'aaa bbb',
+          assignedToId: user1.id,
+          Tags: 'aaa bbb',
           description: task1.description,
-          assignedToId: user2.id,
-        },
-      })
-      .set('user-agent', user2.userAgent)
-      .set('x-test-auth-token', user2.email)
-      .set('Connection', 'keep-alive');
-    await superagent
-      .post('/tasks/new')
-      .type('form')
-      .send({
-        form:
-        {
-          name: task2.name,
-          tags: 'bbb ccc',
-          description: task2.description,
-          assignedToId: user2.id,
         },
       })
       .set('user-agent', user1.userAgent)
       .set('x-test-auth-token', user1.email)
       .set('Connection', 'keep-alive');
     await superagent
-      .post('/tasks/new')
+      .post('/tasks')
+      .type('form')
+      .send({
+        form:
+        {
+          name: task2.name,
+          assignedToId: user2.id,
+          Tags: 'bbb ccc',
+          description: task2.description,
+        },
+      })
+      .set('user-agent', user1.userAgent)
+      .set('x-test-auth-token', user1.email)
+      .set('Connection', 'keep-alive');
+    await superagent
+      .post('/sessions')
+      .type('form')
+      .send({
+        form: {
+          email: user2.email,
+          password: user2.password,
+        },
+      })
+      .set('Connection', 'keep-alive')
+      .set('user-agent', user2.userAgent)
+      .set('content-type', 'application/x-www-form-urlencoded');
+    await superagent
+      .post('/tasks')
       .type('form')
       .send({
         form:
         {
           name: task3.name,
-          tags: 'ddd',
-          description: task3.description,
           assignedToId: user2.id,
+          Tags: 'ddd',
+          description: task3.description,
         },
+      })
+      .set('user-agent', user2.userAgent)
+      .set('x-test-auth-token', user2.email)
+      .set('Connection', 'keep-alive');
+    await superagent
+      .patch(`/tasks/${task3.id}`)
+      .type('form')
+      .send({
+        statusId: 2,
+        taskId: task3.id,
       })
       .set('user-agent', user2.userAgent)
       .set('x-test-auth-token', user2.email)
@@ -582,87 +613,147 @@ describe('Tasks Filtration', () => {
   });
 
   it('Filter: "My Tasks"', async () => {
+    await superagent
+      .post('/sessions')
+      .type('form')
+      .send({
+        form: {
+          email: user1.email,
+          password: user1.password,
+        },
+      })
+      .set('Connection', 'keep-alive')
+      .set('user-agent', user1.userAgent)
+      .set('content-type', 'application/x-www-form-urlencoded');
     const response = await superagent
       .get(`/tasks?creatorId=${user1.id}`)
       .set('user-agent', user1.userAgent)
       .set('x-test-auth-token', user1.email)
       .set('Connection', 'keep-alive');
     expect(response).toHaveHTTPStatus(200);
-    expect(response.text.includes(`${task1.id}`)).toBeTruthy();
-    expect(response.text.includes(`${task2.id}`)).toBeTruthy();
-    expect(response.text.includes(`${task3.id}`)).toBeFalsy();
+    expect(response.text.includes(`${task1.name}`)).toBeTruthy();
+    expect(response.text.includes(`${task2.name}`)).toBeTruthy();
+    expect(response.text.includes(`${task3.name}`)).toBeFalsy();
   });
 
   it('Filter: "Assigned to me"', async () => {
+    await superagent
+      .post('/sessions')
+      .type('form')
+      .send({
+        form: {
+          email: user1.email,
+          password: user1.password,
+        },
+      })
+      .set('Connection', 'keep-alive')
+      .set('user-agent', user1.userAgent)
+      .set('content-type', 'application/x-www-form-urlencoded');
     const response = await superagent
       .get(`/tasks?assignedToId=${user1.id}`)
       .set('user-agent', user1.userAgent)
       .set('x-test-auth-token', user1.email)
       .set('Connection', 'keep-alive');
     expect(response).toHaveHTTPStatus(200);
-    expect(response.text.includes(`${task1.id}`)).toBeTruthy();
-    expect(response.text.includes(`${task2.id}`)).toBeFalsy();
-    expect(response.text.includes(`${task3.id}`)).toBeFalsy();
+    expect(response.text.includes(`${task1.name}`)).toBeTruthy();
+    expect(response.text.includes(`${task2.name}`)).toBeFalsy();
+    expect(response.text.includes(`${task3.name}`)).toBeFalsy();
   });
 
-  it('Filter: by tag', async () => {
+  /* it('Filter: by tag', async () => {
+    await superagent
+      .post('/sessions')
+      .type('form')
+      .send({
+        form: {
+          email: user1.email,
+          password: user1.password,
+        },
+      })
+      .set('Connection', 'keep-alive')
+      .set('user-agent', user1.userAgent)
+      .set('content-type', 'application/x-www-form-urlencoded');
     const response = await superagent
       .get('/tasks?tagId=3&statusId=All+statuses&assignedToId=All+assignee')
       .set('user-agent', user1.userAgent)
       .set('x-test-auth-token', user1.email)
       .set('Connection', 'keep-alive');
     expect(response).toHaveHTTPStatus(200);
-    expect(response.text.includes(`00000${task1.id}`)).toBeTruthy();
-    expect(response.text.includes(`00000${task2.id}`)).toBeTruthy();
-    expect(response.text.includes(`00000${task3.id}`)).toBeFalsy();
-  });
+    expect(response.text.includes(`${task1.name}`)).toBeTruthy();
+    expect(response.text.includes(`${task2.name}`)).toBeTruthy();
+    expect(response.text.includes(`${task3.name}`)).toBeFalsy();
+  }); */
 
   it('Filter: by status', async () => {
+    await superagent
+      .post('/sessions')
+      .type('form')
+      .send({
+        form: {
+          email: user2.email,
+          password: user2.password,
+        },
+      })
+      .set('Connection', 'keep-alive')
+      .set('user-agent', user2.userAgent)
+      .set('content-type', 'application/x-www-form-urlencoded');
     const response = await superagent
-      .get('/tasks?tagId=All+tags&statusId=3&assignedToId=All+assignee')
-      .set('user-agent', user1.userAgent)
-      .set('x-test-auth-token', user1.email)
-      .set('Connection', 'keep-alive');
-    expect(response).toHaveHTTPStatus(200);
-    expect(response.text.includes(`00000${task1.id}`)).toBeFalsy();
-    expect(response.text.includes(`00000${task2.id}`)).toBeFalsy();
-    expect(response.text.includes(`00000${task3.id}`)).toBeTruthy();
-  });
-
-  it('Filter: by assignee', async () => {
-    const response = await superagent
-      .get(`/tasks?tagId=All+tags&statusId=All+statuses&assignedToId=${user2.id}`)
+      .get('/tasks?StatusId=2&assignedToId=All')
       .set('user-agent', user2.userAgent)
       .set('x-test-auth-token', user2.email)
       .set('Connection', 'keep-alive');
     expect(response).toHaveHTTPStatus(200);
-    expect(response.text.includes(`${task1.id}`)).toBeFalsy();
-    expect(response.text.includes(`${task2.id}`)).toBeTruthy();
-    expect(response.text.includes(`${task3.id}`)).toBeTruthy();
+    expect(response.text.includes(`${task1.name}`)).toBeFalsy();
+    expect(response.text.includes(`${task2.name}`)).toBeFalsy();
+    expect(response.text.includes(`${task3.name}`)).toBeTruthy();
   });
 
-  it('Filter contradictory', async () => {
+  it('Filter: by assignee', async () => {
+    await superagent
+      .post('/sessions')
+      .type('form')
+      .send({
+        form: {
+          email: user2.email,
+          password: user2.password,
+        },
+      })
+      .set('Connection', 'keep-alive')
+      .set('user-agent', user2.userAgent)
+      .set('content-type', 'application/x-www-form-urlencoded');
     const response = await superagent
-      .get(`/tasks?tagId=2&statusId=4&assignedToId=${user2.id}`)
-      .set('user-agent', user1.userAgent)
-      .set('x-test-auth-token', user1.email)
+      .get(`/tasks?StatusId=All&assignedToId=${user2.id}`)
+      .set('user-agent', user2.userAgent)
+      .set('x-test-auth-token', user2.email)
       .set('Connection', 'keep-alive');
     expect(response).toHaveHTTPStatus(200);
-    expect(response.text.includes(`${task1.id}`)).toBeFalsy();
-    expect(response.text.includes(`${task2.id}`)).toBeFalsy();
-    expect(response.text.includes(`${task3.id}`)).toBeFalsy();
+    expect(response.text.includes(`${task1.name}`)).toBeFalsy();
+    expect(response.text.includes(`${task2.name}`)).toBeTruthy();
+    expect(response.text.includes(`${task3.name}`)).toBeTruthy();
   });
 
   it('Filter all', async () => {
+    await superagent
+      .post('/sessions')
+      .type('form')
+      .send({
+        form: {
+          email: user1.email,
+          password: user1.password,
+        },
+      })
+      .set('Connection', 'keep-alive')
+      .set('user-agent', user1.userAgent)
+      .set('content-type', 'application/x-www-form-urlencoded');
     const response = await superagent
-      .get('/tasks?tagId=All+tags&statusId=All+statuses&assignedToId=All+assignee')
+      .get('/tasks?StatusId=All&assignedToId=All')
       .set('user-agent', user1.userAgent)
       .set('x-test-auth-token', user1.email)
       .set('Connection', 'keep-alive');
     expect(response).toHaveHTTPStatus(200);
-    expect(response.text.includes(`${task1.id}`)).toBeTruthy();
-    expect(response.text.includes(`${task2.id}`)).toBeTruthy();
-    expect(response.text.includes(`${task3.id}`)).toBeTruthy();
+    expect(response.text.includes(`${task1.name}`)).toBeTruthy();
+    expect(response.text.includes(`${task2.name}`)).toBeTruthy();
+    expect(response.text.includes(`${task3.name}`)).toBeTruthy();
   });
 
   afterAll((done) => {
