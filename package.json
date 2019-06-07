@@ -89,7 +89,6 @@
   },
   "devDependencies": {
     "faker": "^4.1.0",
-    "sqlite3": "^4.0.8",
     "mysql2": "^1.6.5",
     "nodemon": "^1.19.1",
     "pug-lint": "^2.5.0"
