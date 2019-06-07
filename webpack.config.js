@@ -12,6 +12,11 @@ module.exports = {
     filename: 'main.js',
     publicPath: '/public/assets/',
   },
+  optimization: {
+    splitChunks: {
+      chunks: 'all',
+    },
+  },
   module: {
     rules: [
       {
