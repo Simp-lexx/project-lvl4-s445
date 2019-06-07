@@ -17,7 +17,7 @@ gulp.task('console', () => {
 });
 
 gulp.task('server', (cb) => {
-  getServer().listen((process.env.PORT || 5000), () => {
+  getServer().listen((process.env.PORT || 3000), () => {
     console.log(`App started on port: ${process.env.PORT}`);
   }, cb);
 });

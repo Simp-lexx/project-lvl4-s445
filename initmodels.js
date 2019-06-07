@@ -4,14 +4,6 @@ import getModels from './models';
 export default async () => {
   const models = getModels(connect);
 
-  /* await models.reverse().forEach((model) => {
-    model.drop().success(() => {
-      console.log(`success model:${model}`);
-    }).error((error) => {
-      console.log(`model:${model} error:${error}`);
-    });
-  }); */
-
   await models.Comment.drop();
   await models.TaskTag.drop();
   await models.Tag.drop();

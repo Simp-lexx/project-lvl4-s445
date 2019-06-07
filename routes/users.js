@@ -4,7 +4,6 @@ import { isExist } from '../lib/tools';
 export default (router, { User }) => {
   router
     .get('users#list', '/users', async (ctx) => {
-      // console.log(ctx.state.isSignedIn());
       if (!ctx.state.isSignedIn()) {
         ctx.flash.set('Please Log In For Access to This page');
         ctx.redirect(router.url('sessions#new'));

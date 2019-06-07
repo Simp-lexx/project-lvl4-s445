@@ -65,7 +65,6 @@ export default () => {
     if (ctx.status !== 404) {
       return;
     }
-    // console.log(ctx.state);
     ctx.throw(404);
     ctx.redirect('/404');
   });

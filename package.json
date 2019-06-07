@@ -7,7 +7,7 @@
     "taskman": "dist/bin/taskman.js"
   },
   "scripts": {
-    "test": "jest --detectOpenHandles",
+    "test": "jest",
     "webpack": "webpack",
     "start": "gulp server",
     "gulp": "gulp",

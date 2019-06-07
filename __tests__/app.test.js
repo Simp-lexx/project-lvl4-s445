@@ -1,37 +1,3 @@
-/* import request from 'supertest';
-import matchers from 'jest-supertest-matchers';
-
-import app from '..';
-
-describe('requests', () => {
-  let server;
-
-  beforeAll(() => {
-    expect.extend(matchers);
-  });
-
-  beforeEach(() => {
-    server = app().listen(process.env.PORT);
-  });
-
-  it('GET 200', async () => {
-    const res = await request.agent(server)
-      .get('/');
-    expect(res).toHaveHTTPStatus(200);
-  });
-
-  it('GET 404', async () => {
-    const res = await request.agent(server)
-      .get('/wrong-path');
-    expect(res).toHaveHTTPStatus(404);
-  });
-
-  afterEach((done) => {
-    server.close();
-    done();
-  });
-});
- */
 import request from 'supertest';
 import matchers from 'jest-supertest-matchers';
 import faker from 'faker';
@@ -65,14 +31,15 @@ let superagent;
 let user;
 let task;
 
-beforeAll(() => {
+beforeAll(async () => {
   expect.extend(matchers);
-  server = app().listen(process.env.PORT);
+  server = app().listen();
 });
 
 afterAll((done) => {
   userId = 0;
   taskId = 0;
+  connect.close();
   server.close();
   done();
 });
@@ -97,7 +64,7 @@ describe('Standart requests testing', () => {
 });
 
 describe('Tests User Create, Log On & Log Off', () => {
-  beforeAll(() => {
+  beforeAll(async () => {
     superagent = request.agent(server);
     userId += 1;
     user = testUser(userId);
@@ -307,8 +274,6 @@ describe('Tests Users CRUD', () => {
   });
 
   afterAll((done) => {
-    userId = 0;
-    taskId = 0;
     server.close();
     done();
   });
@@ -475,8 +440,6 @@ describe('Tasks CRUD', () => {
 
   afterAll((done) => {
     server.close();
-    userId = 0;
-    taskId = 0;
     done();
   });
 });
@@ -491,15 +454,10 @@ describe('Tasks Filtration', () => {
   beforeAll(async () => {
     await init();
     user1 = testUser(userId = 1);
-    console.log(user1);
     user2 = testUser(userId = 2);
-    console.log(user2);
     task1 = testTask(taskId = 1);
-    console.log(task1);
     task2 = testTask(taskId = 2);
-    console.log(task2);
     task3 = testTask(taskId = 3);
-    console.log(task3);
     superagent = request.agent(server);
     await superagent
       .post('/users')
@@ -660,30 +618,6 @@ describe('Tasks Filtration', () => {
     expect(response.text.includes(`${task3.name}`)).toBeFalsy();
   });
 
-  /* it('Filter: by tag', async () => {
-    await superagent
-      .post('/sessions')
-      .type('form')
-      .send({
-        form: {
-          email: user1.email,
-          password: user1.password,
-        },
-      })
-      .set('Connection', 'keep-alive')
-      .set('user-agent', user1.userAgent)
-      .set('content-type', 'application/x-www-form-urlencoded');
-    const response = await superagent
-      .get('/tasks?tagId=3&statusId=All+statuses&assignedToId=All+assignee')
-      .set('user-agent', user1.userAgent)
-      .set('x-test-auth-token', user1.email)
-      .set('Connection', 'keep-alive');
-    expect(response).toHaveHTTPStatus(200);
-    expect(response.text.includes(`${task1.name}`)).toBeTruthy();
-    expect(response.text.includes(`${task2.name}`)).toBeTruthy();
-    expect(response.text.includes(`${task3.name}`)).toBeFalsy();
-  }); */
-
   it('Filter: by status', async () => {
     await superagent
       .post('/sessions')
@@ -754,6 +688,7 @@ describe('Tasks Filtration', () => {
     expect(response.text.includes(`${task1.name}`)).toBeTruthy();
     expect(response.text.includes(`${task2.name}`)).toBeTruthy();
     expect(response.text.includes(`${task3.name}`)).toBeTruthy();
+    await init();
   });
 
   afterAll((done) => {

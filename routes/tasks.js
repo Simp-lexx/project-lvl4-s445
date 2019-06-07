@@ -54,21 +54,12 @@ export default (router, {
       }
     })
     .post('tasks#create', '/tasks', async (ctx) => {
-      // console.log(ctx);
-      // console.log(ctx.session);
       if (ctx.state.isSignedIn()) {
         const { request: { body: form } } = ctx;
-        // console.log(form);
         const { userId } = ctx.session;
-        // console.log(userId);
         form.form.creatorId = userId;
-        // console.log(form.form.creatorId);
-        // console.log(form.form);
         const users = await User.findAll();
-        // console.log(users);
-        // console.log(form.form.Tags);
         const tags = form.form.Tags.split(' ');
-        // console.log(tags);
         const task = await Task.build(form.form);
         try {
           await task.save();
@@ -87,13 +78,9 @@ export default (router, {
       }
     })
     .patch('tasks#update', '/tasks/:id', async (ctx) => {
-      // console.log(ctx.request);
-      // console.log(ctx.request.body);
       if (ctx.state.isSignedIn()) {
         const { statusId, taskId } = ctx.request.body;
-        // console.log(statusId, taskId);
         const task = await Task.findByPk(Number(taskId));
-        // console.log(task);
         task.setStatus(Number(statusId));
         ctx.redirect(`/tasks/${taskId}`);
       } else {
