@@ -6,4 +6,4 @@ pg.defaults.ssl = true;
 
 dotenv.config();
 
-export default new Sequelize(process.env.DB_DEV || process.env.DATABASE_URL);
+export default new Sequelize(process.env.DATABASE_URL || process.env.DB_DEV);
