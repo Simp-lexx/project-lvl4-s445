@@ -1,5 +1,7 @@
-export default connect => connect.define('TaskTag', {
-}, {
-  freezeTableName: true,
-  timestamps: false,
-});
+export default (sequelize) => {
+  const TaskTag = sequelize.define('TaskTag', {
+  }, {
+    timestamps: false,
+  });
+  return TaskTag;
+};

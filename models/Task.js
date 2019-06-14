@@ -1,40 +1,43 @@
-import Sequelize from 'sequelize';
-
-export default connect => connect.define('Task', {
-  name: {
-    type: Sequelize.STRING,
-    validate: {
-      notEmpty: true,
+export default (sequelize, DataTypes) => {
+  const Task = sequelize.define('Task', {
+    name: {
+      type: DataTypes.STRING,
+      validate: {
+        notEmpty: true,
+      },
     },
-  },
-  description: {
-    type: Sequelize.TEXT,
-  },
-
-  StatusId: {
-    type: Sequelize.INTEGER,
-    defaultValue: 1,
-  },
-  creatorId: {
-    type: Sequelize.INTEGER,
-    validate: {
-      notEmpty: true,
+    description: DataTypes.TEXT,
+    StatusId: {
+      type: DataTypes.INTEGER,
+      defaultValue: 1,
     },
-  },
-
-  assignedToId: {
-    type: Sequelize.INTEGER,
-    allowNull: false,
-    validate: {
-      notEmpty: true,
+    creatorId: {
+      type: DataTypes.INTEGER,
+      validate: {
+        notEmpty: true,
+      },
     },
-  },
-}, {
-  getterMethods: {
-    statusName: async function statusName() {
-      const status = await this.getStatus();
-      return status.dataValues.name;
+    assignedToId: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+      validate: {
+        notEmpty: true,
+      },
     },
-  },
-  freezeTableName: true,
-});
+  }, {
+    getterMethods: {
+      statusName: async function statusName() {
+        const status = await this.getStatus();
+        return status.dataValues.name;
+      },
+    },
+  });
+  Task.associate = (models) => {
+    Task.belongsTo(models.User, { as: 'assignedTo' });
+    Task.belongsTo(models.User, { as: 'creator' });
+    Task.belongsTo(models.Status);
+    Task.belongsToMany(models.Tag, { through: 'TaskTag' });
+    Task.hasMany(models.Comment);
+  };
+  return Task;
+};

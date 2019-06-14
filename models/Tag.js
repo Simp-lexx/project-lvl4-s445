@@ -1,14 +1,17 @@
-import Sequelize from 'sequelize';
-
-export default connect => connect.define('Tag', {
-  name: {
-    type: Sequelize.STRING,
-    unique: true,
-    validate: {
-      notEmpty: true,
+export default (sequelize, DataTypes) => {
+  const Tag = sequelize.define('Tag', {
+    name: {
+      type: DataTypes.STRING,
+      unique: true,
+      validate: {
+        notEmpty: true,
+      },
     },
-  },
-}, {
-  freezeTableName: true,
-  timestamps: false,
-});
+  }, {
+    timestamps: false,
+  });
+  Tag.associate = (models) => {
+    Tag.belongsToMany(models.Task, { through: 'TaskTag' });
+  };
+  return Tag;
+};
