@@ -1,6 +1,5 @@
 const path = require('path');
 const webpack = require('webpack');
-const autoprefixer = require('autoprefixer');
 
 module.exports = {
   mode: process.env.NODE_ENV || 'development',
@@ -9,12 +8,18 @@ module.exports = {
   },
   output: {
     path: path.join(__dirname, 'public', 'assets'),
-    filename: 'main.js',
-    publicPath: '/public/assets/',
+    filename: '[name].js',
+    publicPath: '/assets/',
   },
   optimization: {
     splitChunks: {
       chunks: 'all',
+      cacheGroups: {
+        vendors: {
+          test: /[\\/]node_modules[\\/]/,
+          name: 'vendors',
+        },
+      },
     },
   },
   module: {
@@ -25,18 +30,12 @@ module.exports = {
         use: 'babel-loader',
       },
       {
+        test: /\.scss$/,
+        use: ['style-loader', 'css-loader', 'postcss-loader', 'sass-loader'],
+      },
+      {
         test: /\.css$/,
-        use: [{
-          loader: 'style-loader',
-        }, {
-          loader: 'css-loader',
-        }, {
-          loader: 'postcss-loader',
-          options: {
-            ident: 'postcss',
-            plugins: () => [autoprefixer],
-          },
-        }],
+        use: ['style-loader', 'css-loader', 'postcss-loader'],
       },
     ],
   },

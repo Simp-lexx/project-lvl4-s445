@@ -1,13 +1,13 @@
 module.exports = {
-  up: (queryInterface, Sequelize) => queryInterface.createTable('Comment', {
+  up: (queryInterface, Sequelize) => queryInterface.createTable('Statuses', {
     id: {
       allowNull: false,
       autoIncrement: true,
       primaryKey: true,
       type: Sequelize.INTEGER,
     },
-    content: {
-      type: Sequelize.TEXT,
+    name: {
+      type: Sequelize.STRING,
       validate: {
         notEmpty: true,
       },
@@ -21,5 +21,5 @@ module.exports = {
       type: Sequelize.DATE,
     },
   }),
-  down: queryInterface => queryInterface.dropTable('Comment'),
+  down: queryInterface => queryInterface.dropTable('Statuses'),
 };

@@ -1,6 +1,7 @@
 import buildFormObj from '../lib/formObjectBuilder';
+import { Comment } from '../models';
 
-export default (router, { Comment }) => {
+export default (router) => {
   router
     .post('comments#new', '/tasks/:id/comments/new', async (ctx) => {
       const { form } = ctx.request.body;

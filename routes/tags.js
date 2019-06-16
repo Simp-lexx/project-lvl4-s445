@@ -1,6 +1,7 @@
 import { getData } from '../lib/tools';
+import { Tag } from '../models';
 
-export default (router, { Tag }) => {
+export default (router) => {
   router
     .get('tags#view', '/tags/:id', async (ctx) => {
       const id = Number(ctx.params.id);

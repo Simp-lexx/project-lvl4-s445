@@ -1,7 +1,8 @@
 import buildFormObj from '../lib/formObjectBuilder';
 import { encrypt } from '../lib/secure';
+import { User } from '../models';
 
-export default (router, { User }) => {
+export default (router) => {
   router
     .get('sessions#new', '/sessions/new', async (ctx) => {
       const data = {};

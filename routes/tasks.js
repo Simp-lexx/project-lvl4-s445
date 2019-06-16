@@ -1,11 +1,14 @@
 import url from 'url';
 import rollbar from 'rollbar';
 import buildFormObj from '../lib/formObjectBuilder';
+
+import {
+  User, Task, Status, Tag,
+} from '../models';
+
 import { getData, getParams } from '../lib/tools';
 
-export default (router, {
-  User, Task, Status, Tag,
-}) => {
+export default (router) => {
   router
     .get('tasks#new', '/tasks/new', async (ctx) => {
       if (ctx.state.isSignedIn()) {
