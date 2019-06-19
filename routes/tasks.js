@@ -1,13 +1,13 @@
+import debug from 'debug';
 import url from 'url';
 import rollbar from 'rollbar';
 import buildFormObj from '../lib/formObjectBuilder';
 
-import {
-  User, Task, Status, Tag,
-} from '../models';
+import { User, Task, Status, Tag } from '../models'; // eslint-disable-line
 
 import { getData, getParams } from '../lib/tools';
 
+const log = debug('application:tasks');
 export default (router) => {
   router
     .get('tasks#new', '/tasks/new', async (ctx) => {
@@ -21,14 +21,27 @@ export default (router) => {
       }
     })
     .get('tasks#list', '/tasks', async (ctx) => {
+      // log(ctx);
+      // log(ctx.request);
+      // log(ctx.response);
+      // log(ctx.response);
       if (ctx.state.isSignedIn()) {
         const { query } = url.parse(ctx.request.url, true);
+        log(query);
+        // console.log(query);
         const where = getParams(query);
+        log(where);
         const filteredTasks = await Task.findAll({ where });
+        log(filteredTasks);
         const tasks = await Promise.all(filteredTasks.map(async task => getData(task)));
+        log(tasks);
+
         const tags = await Tag.findAll();
+        // log(tags);
         const statuses = await Status.findAll();
+        // log(statuses);
         const users = await User.findAll();
+        // log(users);
         ctx.render('tasks/index', {
           users, tasks, statuses, tags,
         });

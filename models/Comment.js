@@ -6,6 +6,14 @@ export default (sequelize, DataTypes) => {
         notEmpty: true,
       },
     },
+    UserId: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+    },
+    TaskId: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+    },
   }, {});
   Comment.associate = (models) => {
     Comment.belongsTo(models.User);
