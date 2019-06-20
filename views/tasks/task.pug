@@ -1,7 +1,7 @@
 extends /layouts/app.pug
 
 block content
-  h2.text-center.mt-3 Task
+  h2.text-center.mt-3= task.name
   .form-group.col-lg-4.mt-3.mx-auto
     table.table.table-stripped
       tbody
@@ -11,16 +11,12 @@ block content
           td.text-center= task.id
         tr
           th
-            | Name
-          td.text-center= task.name
-        tr
-          th
             | Status
           td.text-center= task.status            
         tr
           th
-            | Creator(id)
-          td.text-center= `${task.creator}(${task.creatorId})`
+            | Creator
+          td.text-center= task.creator
         tr
           th
             | Assigned To
@@ -31,7 +27,7 @@ block content
           td.text-center= task.description
         tr
           th
-            | createdAt
+            | Created At
           td.text-center= task.createdAt
         tr
           th
@@ -63,12 +59,12 @@ block content
     table.table.table-stripped.mt-4
       thead
         tr
-          th.text-center Message
-          th.text-center Created by (id)
+          th.text-center Comment
+          th.text-center Created By
           th.text-center Created At
       tbody
         each comment in comments
           tr
             td.text-center= comment.content
-            td.text-center= `${user.fullName} (${user.id})`
+            td.text-center= user.fullName
             td.text-center= comment.createdAt

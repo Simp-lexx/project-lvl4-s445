@@ -23,7 +23,7 @@ html(lang="en")
             li.nav-item
               a.nav-link(href=urlFor('tasks#list')) Task List
             li.nav-item
-              a.nav-link(href=urlFor('users#profile', { id: signedId() })) Profile
+              a.nav-link(href=urlFor('users#show', { id: signedId() })) Profile
             li.nav-item
               a.nav-link(href=urlFor('sessions#destroy') data-method='delete' rel='nofollow') Log Out
           else
