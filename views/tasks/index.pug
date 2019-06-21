@@ -36,10 +36,11 @@ block content
           tr
             th.text-center ID
             th.text-center Name
+            th.text-center Description
             th.text-center Status
-            th.text-center AssignedTo
-            th.text-center Created by
-            th.text-center createdAt
+            th.text-center Assigned To
+            th.text-center Created By
+            th.text-center Created At
             th.text-center Delete
             
         tbody
@@ -48,6 +49,7 @@ block content
               td.text-center= task.id
               td.text-center
                 a(href=urlFor('tasks#view', { id: task.id }))= task.name
+              td.text-center= task.description 
               td.text-center= task.status
               td.text-center= task.assignedTo
               td.text-center= task.creator
