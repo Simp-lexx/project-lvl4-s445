@@ -1,8 +1,8 @@
 - const getInputName = (f, property) => `${f.name}[${property}]`
 
-mixin formFor(f, form_class, options = {})
-  form(action=_.get(options, 'url') class=`${form_class}` method=_.get(options, 'method', 'get'))
-    block
+//- mixin formFor(f, form_class, options = {})
+//-   form(action=_.get(options, 'url') class=`${form_class}` method=_.get(options, 'method', 'get'))
+//-     block
 
 mixin formFor(f, options = {})
   - const url = _.get(options, 'url');
@@ -23,21 +23,25 @@ mixin input(f, property, placeholder = property, options = { as: 'text', label: 
     if f.errors[property]
       .invalid-feedback= f.errors[property].map(({ message }) => message).join('. ')
 
-mixin input(f, property, image, options = { as: 'text', label: '' }) 
-  - const value = f.object[property] === undefined ? '' : f.object[property]
-    .input-group.margin-bottom-sm(class=(f.errors[property] && 'has-danger'))    
-      span.input-group-addon
-        i(aria-hidden='true' class=`${image}`)
-      input(name=getInputName(f, property) class='form-control' type=options['as'] id=options['label'] value=`${value}` placeholder=`${property}`)
-    if f.errors[property]
-      .form-control-feedback= f.errors[property].map(({ message }) => message).join('. ')
+//- mixin input(f, property, image, options = { as: 'text', label: '' }) 
+//-   - const value = f.object[property] === undefined ? '' : f.object[property]
+//-     .input-group.margin-bottom-sm(class=(f.errors[property] && 'has-danger'))    
+//-       span.input-group-addon
+//-         i(aria-hidden='true' class=`${image}`)
+//-       input(name=getInputName(f, property) class='form-control' type=options['as'] id=options['label'] value=`${value}` placeholder=`${property}`)
+//-     if f.errors[property]
+//-       .form-control-feedback= f.errors[property].map(({ message }) => message).join('. ')
 
-mixin textarea(f, property)
+mixin textarea(f, property, placeholder = property, options = { as: 'text', label: false })
   - const value = f.object[property] === undefined ? '' : f.object[property]
-    form-group(class=(f.errors[property] && 'has-danger'))
-      textarea(name=getInputName(f, property) class='form-control' type='text' value=`${value}` placeholder=`${property}` rows='4' maxlength="255")
-      if f.errors[property]
-        .form-control-feedback= f.errors[property].map(({ message }) => message).join('. ') 
+  - const isInvalid = f.errors[property] ? ' is-invalid' : ''
+  .form-group
+    if options.label
+      label= placeholder
+      //- form-group(class=(f.errors[property] && 'has-danger'))
+    textarea(name=getInputName(f, property) class=`form-control${isInvalid}` type=options['as'] value=`${value}` placeholder=`${placeholder}` rows='4' maxlength="255")
+    if f.errors[property]
+      .invalid-feedback= f.errors[property].map(({ message }) => message).join('. ') 
 
 mixin fieldset(f, property, value) 
   form-group(class=(f.errors[property] && 'has-danger'))
@@ -63,11 +67,9 @@ mixin select(f, property, placeholder = property, items)
   .form-group
     label= placeholder
     select(name=getInputName(f, property) class=`form-control` value=`${value}`)
-      option(selected='') Assigned to
-      each user in users
+      option(selected='') Select User
+      each item in items
         option(value= user.id)= user.fullName
-    if f.errors[property]
-      .form-control-feedback= f.errors[property].map(({ message }) => message).join('. ')
 
 mixin smallField(options = { label: '', value: '' })
   .row.my-3
@@ -75,9 +77,9 @@ mixin smallField(options = { label: '', value: '' })
         b.text-muted=options['label']
     .col-9.text-nowrap.card.card-outline-secondary.py-1= options['value']
         
-mixin button(value, type = 'submit')
-  .mt-3.form-group
-    input(class='btn btn-outline-success btn-block' type=`${type}` value=`${value}`)
+//- mixin button(value, type = 'submit')
+//-   .mt-3.form-group
+//-     input(class='btn btn-outline-success btn-block' type=`${type}` value=`${value}`)
 
 mixin button(value = 'Save', bClass = 'success' , type = 'submit')
   .form-group

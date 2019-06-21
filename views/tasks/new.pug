@@ -5,7 +5,7 @@ block content
     h1.text-center.my-5 Create new task
     .row.justify-content-center.pb-5
       .col-12.col-lg-4
-        +formFor(f, { url: urlFor('users#create'), method: 'post' })
+        +formFor(f, { url: urlFor('tasks#create'), method: 'post' })
           +input(f, 'name', 'Task Name')
           +select(f, 'assignedToId','Assigned To', users)
           +input(f, 'Tags', 'Task Tags')

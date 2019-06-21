@@ -3,10 +3,21 @@ export default (sequelize, DataTypes) => {
     name: {
       type: DataTypes.STRING,
       validate: {
-        notEmpty: true,
+        notEmpty: {
+          args: true,
+          msg: 'Please enter the task name',
+        },
       },
     },
-    description: DataTypes.TEXT,
+    description: {
+      type: DataTypes.TEXT,
+      validate: {
+        notEmpty: {
+          args: true,
+          msg: 'Please enter the task description',
+        },
+      },
+    },
     StatusId: {
       type: DataTypes.INTEGER,
       defaultValue: 1,
@@ -19,9 +30,11 @@ export default (sequelize, DataTypes) => {
     },
     assignedToId: {
       type: DataTypes.INTEGER,
-      allowNull: false,
       validate: {
-        notEmpty: true,
+        notEmpty: {
+          args: true,
+          msg: 'User must be selected',
+        },
       },
     },
   }, {
@@ -33,8 +46,8 @@ export default (sequelize, DataTypes) => {
     },
   });
   Task.associate = (models) => {
-    Task.belongsTo(models.User, { as: 'assignedTo' });
-    Task.belongsTo(models.User, { as: 'creator' });
+    Task.belongsTo(models.User, { as: 'creator', foreignKeyConstraint: true, onDelete: 'cascade' });
+    Task.belongsTo(models.User, { as: 'assignedTo', foreignKeyConstraint: true, onDelete: 'cascade' });
     Task.belongsTo(models.Status);
     Task.belongsToMany(models.Tag, { through: 'TaskTag' });
     Task.hasMany(models.Comment);

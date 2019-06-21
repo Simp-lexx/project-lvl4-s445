@@ -11,7 +11,7 @@ export default (sequelize, DataTypes) => {
       validate: {
         isEmail: {
           args: true,
-          msg: 'Entered e-mail does not valid.',
+          msg: 'Entered e-mail does not valid',
         },
         notEmpty: {
           args: true,
@@ -35,7 +35,7 @@ export default (sequelize, DataTypes) => {
       validate: {
         len: {
           args: [6, +Infinity],
-          msg: 'The minimum password length is 6 characters.',
+          msg: 'The minimum password length is 6 characters',
         },
       },
     },
