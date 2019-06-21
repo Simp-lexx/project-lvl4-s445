@@ -4,6 +4,25 @@ mixin formFor(f, form_class, options = {})
   form(action=_.get(options, 'url') class=`${form_class}` method=_.get(options, 'method', 'get'))
     block
 
+mixin formFor(f, options = {})
+  - const url = _.get(options, 'url');
+  - const method = _.get(options, 'method', 'get').toLowerCase();
+  - const isStandart = _.includes(['get', 'post'], method);
+  form(action= url method= isStandart ? method : 'post')
+    if !isStandart
+      input(name='_method' type='hidden' value= method)
+    block
+
+mixin input(f, property, placeholder = property, options = { as: 'text', label: false })
+  - const value = f.object[property] === undefined ? '' : f.object[property]
+  - const isInvalid = f.errors[property] ? ' is-invalid' : ''
+  .form-group
+    if options.label
+      label= placeholder
+    input(name=getInputName(f, property) class=`form-control${isInvalid}` type=options['as'] value=`${value}` placeholder=`${placeholder}`)
+    if f.errors[property]
+      .invalid-feedback= f.errors[property].map(({ message }) => message).join('. ')
+
 mixin input(f, property, image, options = { as: 'text', label: '' }) 
   - const value = f.object[property] === undefined ? '' : f.object[property]
     .input-group.margin-bottom-sm(class=(f.errors[property] && 'has-danger'))    
@@ -27,12 +46,23 @@ mixin fieldset(f, property, value)
     if f.errors[property]
       .form-control-feedback= f.errors[property].map(({ message }) => message).join('. ')
 
-mixin select(f, property, image, users) 
+//- mixin select(f, property, image, users) 
+//-   - const value = f.object[property] === undefined ? '' : f.object[property]
+//-   .input-group.margin-bottom-sm(class=(f.errors[property] && 'has-danger'))    
+//-     span.input-group-addon
+//-       i(aria-hidden='true' class=`${image}`)
+//-     select(name=getInputName(f, property) class='form-control' value=`${value}`)
+//-       option(selected='') Assigned to
+//-       each user in users
+//-         option(value= user.id)= user.fullName
+//-     if f.errors[property]
+//-       .form-control-feedback= f.errors[property].map(({ message }) => message).join('. ')
+
+mixin select(f, property, placeholder = property, items)
   - const value = f.object[property] === undefined ? '' : f.object[property]
-  .input-group.margin-bottom-sm(class=(f.errors[property] && 'has-danger'))    
-    span.input-group-addon
-      i(aria-hidden='true' class=`${image}`)
-    select(name=getInputName(f, property) class='form-control' value=`${value}`)
+  .form-group
+    label= placeholder
+    select(name=getInputName(f, property) class=`form-control` value=`${value}`)
       option(selected='') Assigned to
       each user in users
         option(value= user.id)= user.fullName
@@ -48,6 +78,10 @@ mixin smallField(options = { label: '', value: '' })
 mixin button(value, type = 'submit')
   .mt-3.form-group
     input(class='btn btn-outline-success btn-block' type=`${type}` value=`${value}`)
+
+mixin button(value = 'Save', bClass = 'success' , type = 'submit')
+  .form-group
+    input(class=`btn btn-block btn-${bClass}` type=`${type}` value= value)
 
 mixin editButton(options = { target: '', id: 0, label: '' })
   .col-4
