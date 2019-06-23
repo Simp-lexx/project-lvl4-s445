@@ -11,15 +11,3 @@ block content
           +input(f, 'Tags', 'Task Tags')
           +textarea(f, 'description', 'Task Description')
           +button('Create')
-
-//- block content
-//-   .container
-//-     h1.text-center.my-5 Registration
-//-     .row.justify-content-center.pb-5
-//-       .col-12.col-lg-4
-//-         +formFor(f, { url: urlFor('users#create'), method: 'post' })
-//-           +input(f, 'email', 'name@example.com')
-//-           +input(f, 'firstName', 'First Name')
-//-           +input(f, 'lastName', 'Last Name')
-//-           +input(f, 'password', 'Password', { as: 'password' })
-//-           +button('Sign Up')

@@ -15,7 +15,7 @@ export default (sequelize, DataTypes) => {
         },
         notEmpty: {
           args: true,
-          msg: 'Please enter the email',
+          msg: 'Empty e-mail does not allowed',
         },
       },
     },
@@ -39,8 +39,24 @@ export default (sequelize, DataTypes) => {
         },
       },
     },
-    firstName: DataTypes.STRING,
-    lastName: DataTypes.STRING,
+    firstName: {
+      type: DataTypes.STRING,
+      validate: {
+        notEmpty: {
+          args: true,
+          msg: 'Empty first name does not allowed',
+        },
+      },
+    },
+    lastName: {
+      type: DataTypes.STRING,
+      validate: {
+        notEmpty: {
+          args: true,
+          msg: 'Empty last name does not allowed',
+        },
+      },
+    },
   }, {
     getterMethods: {
       fullName() {

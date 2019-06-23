@@ -1,53 +1,53 @@
 extends /layouts/app.pug
 
 block content
-  h2.text-center.mt-3= task.name
-  .form-group.col-lg-4.mt-3.mx-auto
+  h2.text-center.mt-3= `Task Name: ${task.name}` 
+  .form-group.mt-3.mx-auto
     table.table.table-stripped
       tbody
         tr
           th
             | ID
-          td.text-center= task.id
+          td= task.id
         tr
           th
             | Status
-          td.text-center= task.status            
+          td= task.status            
         tr
           th
             | Creator
-          td.text-center= task.creator
+          td= task.creator
         tr
           th
             | Assigned To
-          td.text-center= task.assignedTo
+          td= task.assignedTo
         tr
           th
             | Description
-          td.text-center= task.description
+          td= task.description
         tr
           th
             | Created At
-          td.text-center= task.createdAt
+          td= task.createdAt
         tr
           th
             | Tags
-          td.text-center
+          td
             form.form-inline(action=urlFor('tasks#list'))
               each tag in tags
                 a.mr-2(href=urlFor('tags#view', { id: tag.id }))= tag.name
               
-    form.form-inline.mx-auto.justify-content-center(action=urlFor('tasks#update', { id: task.id }), method='post')
+    form.form-inline.pr-7.justify-content-center(action=urlFor('tasks#update', { id: task.id }), method='post')
       - const value = f.object[property] === undefined ? '' : f.object[property]
       .form-group(class=(f.errors[property] && 'has-danger'))
-        select(name='statusId' class='form-control' value=`${value}`)
+        select.mr-3(name='statusId' class='form-control' value=`${value}`)
           each status in statuses
             option(value= status.id)= status.name
         input(type='hidden' name='_method' value='PATCH')
         input(type='hidden' name='taskId' value= task.id)
         button(class='btn btn-primary') Change status
         
-  div.col-lg-8.justify-content-start.offset-md-2
+  div.justify-content-start
     form(action=urlFor('comments#new', { id: task.id }) method='post' )
       label(for='Comment') Comment
       +textarea(f, 'content')

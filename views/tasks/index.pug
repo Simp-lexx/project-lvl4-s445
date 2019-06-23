@@ -1,47 +1,44 @@
 extends /layouts/app.pug
 
 block content
-  .row.justify-content-center.mt-4
-    form(method='GET', action=urlFor('tasks#new'))
-      button(type='submit' class='btn btn-success btn-lg')
-        i.fa.fa-ticket(aria-hidden='true') New Task         
+  .container-fluid
+    form.form-inline.justify-content-center.py-4(method='GET', action=urlFor('tasks#new'))
+      button(type='submit' class='btn btn-success') New Task         
   
-  form.form-inline.justify-content-center.mt-4(action=urlFor('tasks#list'))
-    button(type='submit' class='btn btn-warning' name='creatorId' value=signedId())
-      i.fa.fa-ticket(aria-hidden='true') My tasks 
+    form.form-inline.justify-content-center.py-4(action=urlFor('tasks#list'))
+      button(type='submit' class='btn btn-warning' name='creatorId' value=signedId()) My tasks 
       
-    .form-group.ml-4
-      label.mr-2 Status:
-      select(name='StatusId' class='form-control' value='StatusId')
-        option All
-        each status in statuses
-          option(value= status.id)= status.name
+      .form-group.ml-4
+        label.mr-2 Status:
+        select(name='StatusId' class='form-control' value='StatusId')
+          option All
+          each status in statuses
+            option(value= status.id)= status.name
           
-    .form-group.ml-4
-      label.mr-2 Assigned to:
-      select(name='assignedToId' class='form-control')
-        option All
-        each user in users
-          option(value= user.id)= user.fullName
+      .form-group.ml-4
+        label.mr-2 Assigned to:
+        select(name='assignedToId' class='form-control')
+          option All
+          each user in users
+            option(value= user.id)= user.fullName
           
-    .form-group.ml-4
-      button(class='btn btn-primary' type='submit')
-        i.mr-1.fa.fa-search
-        | Search                  
-         
-  .row.justify-content-center.mt-4
-    .col-lg-4
-      table.table.table-stripped
-        h2.text-center.mb-4 Tasks
-          tr
-            th.text-center ID
-            th.text-center Name
-            th.text-center Description
-            th.text-center Status
-            th.text-center Assigned To
-            th.text-center Created By
-            th.text-center Created At
-            th.text-center Delete
+      .form-group.ml-4
+        button(class='btn btn-primary' type='submit')
+          i.mr-1.fa.fa-search
+          | Search                  
+    
+    h2.text-center.my-4 Tasks     
+    .row.justify-content-center.mt-4
+      table.table.table-stripped 
+        tr
+          th.text-center ID
+          th.text-center Name
+          th.text-center Description
+          th.text-center Status
+          th.text-center Assigned To
+          th.text-center Created By
+          th.text-center Created At
+          th.text-center Delete
             
         tbody
           each task in tasks
@@ -58,5 +55,4 @@ block content
                 if task.creatorId == signedId()                  
                   form(method='POST', action=urlFor('tasks#delete', { id: task.id }))
                     input(type='hidden', name='_method', value='DELETE')
-                    button(type='submit' class='btn btn-danger')
-                      i.fa.fa-trash-o(aria-hidden='true')
+                    button(type='submit' class='btn btn-danger') Delete

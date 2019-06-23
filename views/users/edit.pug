@@ -1,12 +1,12 @@
 extends /layouts/app.pug
 
 block content
-  if isSignedIn()
-    .container.align-content-center.justify-content-center.col-4
-        h2.form-signin-heading.py-4.text-center Edit profile
-        form(action=urlFor('users#update', { id }) method='post')
-          +input(f, 'email', 'fa fa-envelope-o fa-fw', { label: 'e-mail'})
-          +input(f, 'firstName','fa fa-address-book-o fa-fw', { label: 'First Name' })
-          +input(f, 'lastName', 'fa fa-address-book-o fa-fw', { label: 'Last Name' })
-          .row.form-group.mt-5
-            +confirmButton(f, 'Save Profile', { method: 'patch' })
+  .container
+    h1.text-center.my-5 Edit profile
+    .row.justify-content-center.pb-5
+      .col-12.col-lg-4
+        +formFor(f, { url: urlFor('users#update', { id }), method: 'post' })
+          +input(f, 'email', 'e-mail', { label: 'e-mail'})
+          +input(f, 'firstName', 'First Name', { label: 'First Name'})
+          +input(f, 'lastName', 'Last Name', { label: 'Last Name' })
+          +confirmButton(f, 'Save Profile', { method: 'patch' })

@@ -3,11 +3,9 @@ import matchers from 'jest-supertest-matchers';
 import faker from 'faker';
 
 import app from '..';
-import getModels from '../models';
-import connect from '../database';
-import init from '../initmodels';
-
-const models = getModels(connect);
+import {
+  User, Task, Tag, Status, Comment, TaskTag,
+} from '../models';
 
 const testUser = id => ({
   id,
@@ -39,7 +37,6 @@ beforeAll(async () => {
 afterAll((done) => {
   userId = 0;
   taskId = 0;
-  connect.close();
   server.close();
   done();
 });
@@ -54,7 +51,10 @@ describe('Standart requests testing', () => {
   it('Test GET 404', async () => {
     const res = await request.agent(server)
       .get('/wrong-path');
-    expect(res).toHaveHTTPStatus(404);
+    expect(res).toHaveHTTPStatus(302);
+    const res404 = await request.agent(server)
+      .get('/404');
+    expect(res404).toHaveHTTPStatus(404);
   });
 
   afterAll((done) => {
@@ -65,6 +65,7 @@ describe('Standart requests testing', () => {
 
 describe('Tests User Create, Log On & Log Off', () => {
   beforeAll(async () => {
+    await User.sync({ force: true });
     superagent = request.agent(server);
     userId += 1;
     user = testUser(userId);
@@ -181,14 +182,14 @@ describe('Tests Users CRUD', () => {
       .set('user-agent', user.userAgent)
       .set('content-type', 'application/x-www-form-urlencoded');
     const email = `${user.email}`;
-    const userDb = await models.User.findOne({
+    const userDb = await User.findOne({
       where: {
         email,
       },
     });
     const userDbId = userDb.id;
     const response = await superagent
-      .get(`/users/${userDbId}/profile`)
+      .get(`/users/${userDbId}`)
       .set('user-agent', user.userAgent)
       .set('x-test-auth-token', user.email)
       .set('Connection', 'keep-alive');
@@ -210,7 +211,7 @@ describe('Tests Users CRUD', () => {
       .set('user-agent', user.userAgent)
       .set('content-type', 'application/x-www-form-urlencoded');
     const email = `${user.email}`;
-    const userDb = await models.User.findOne({
+    const userDb = await User.findOne({
       where: {
         email,
       },
@@ -236,7 +237,7 @@ describe('Tests Users CRUD', () => {
       .set('accept', 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8')
       .expect(302);
     const response = await superagent
-      .get(`/users/${userDbId}/profile`)
+      .get(`/users/${userDbId}`)
       .set('user-agent', user.userAgent)
       .set('x-test-auth-token', user.email)
       .set('Connection', 'keep-alive');
@@ -258,7 +259,7 @@ describe('Tests Users CRUD', () => {
       .set('user-agent', user.userAgent)
       .set('content-type', 'application/x-www-form-urlencoded');
     const email = `${user.email}`;
-    const userDb = await models.User.findOne({
+    const userDb = await User.findOne({
       where: {
         email,
       },
@@ -283,7 +284,18 @@ describe('Tasks CRUD', () => {
   beforeAll(async () => {
     userId = 1;
     taskId = 1;
-    await init();
+    await User.sync({ force: true });
+    await Task.sync({ force: true });
+    await Tag.sync({ force: true });
+    await TaskTag.sync({ force: true });
+    await Status.sync({ force: true });
+    await Comment.sync({ force: true });
+    await Status.bulkCreate([
+      { name: 'New' },
+      { name: 'In process' },
+      { name: 'Testing' },
+      { name: 'Finished' },
+    ]);
     superagent = request.agent(server);
     user = testUser(userId);
     task = testTask(taskId);
@@ -303,7 +315,6 @@ describe('Tasks CRUD', () => {
       .set('Connection', 'keep-alive')
       .set('content-type', 'application/x-www-form-urlencoded');
   });
-
 
   it('Test Successfully Read Tasks List when User Logged In', async () => {
     await superagent
@@ -452,7 +463,18 @@ describe('Tasks Filtration', () => {
   let task3;
 
   beforeAll(async () => {
-    await init();
+    await User.sync({ force: true });
+    await Task.sync({ force: true });
+    await Tag.sync({ force: true });
+    await TaskTag.sync({ force: true });
+    await Status.sync({ force: true });
+    await Comment.sync({ force: true });
+    await Status.bulkCreate([
+      { name: 'New' },
+      { name: 'In process' },
+      { name: 'Testing' },
+      { name: 'Finished' },
+    ]);
     user1 = testUser(userId = 1);
     user2 = testUser(userId = 2);
     task1 = testTask(taskId = 1);
@@ -688,7 +710,8 @@ describe('Tasks Filtration', () => {
     expect(response.text.includes(`${task1.name}`)).toBeTruthy();
     expect(response.text.includes(`${task2.name}`)).toBeTruthy();
     expect(response.text.includes(`${task3.name}`)).toBeTruthy();
-    await init();
+    await User.sync({ force: true });
+    await Task.sync({ force: true });
   });
 
   afterAll((done) => {

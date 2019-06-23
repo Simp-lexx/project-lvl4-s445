@@ -65,8 +65,7 @@ export default () => {
     if (ctx.status !== 404) {
       return;
     }
-    ctx.throw(404);
-    ctx.redirect('/404');
+    ctx.redirect('404');
   });
 
   const pug = new Pug({
