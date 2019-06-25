@@ -35,8 +35,10 @@ block content
           td
             form.form-inline(action=urlFor('tasks#list'))
               each tag in tags
-                a.mr-2(href=urlFor('tags#view', { id: tag.id }))= tag.name
-              
+                .d-inline
+                  a(href=urlFor('tags#view', { id: tag.id }))
+                    .badge.badge-info.p-1.mx-1.h8= tag.name
+                      
     form.form-inline.pr-7.justify-content-center(action=urlFor('tasks#update', { id: task.id }), method='post')
       - const value = f.object[property] === undefined ? '' : f.object[property]
       .form-group(class=(f.errors[property] && 'has-danger'))

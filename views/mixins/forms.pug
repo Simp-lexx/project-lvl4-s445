@@ -45,6 +45,13 @@ mixin select(f, property, placeholder = property, items)
         - const name = item.name === undefined ? item.fullName : item.name
         option(value=`${item.id}`)= name
 
+mixin filterSelect(options = { name: "", defaultLabel: "", collection: [], property: "" })
+  .col-2
+    select(class='form-control' name=options['name'])
+      option(selected='')= options['defaultLabel']
+        each item in options['collection']
+          option(value= item.id)= item[`${options['property']}`]
+
 mixin smallField(options = { label: '', value: '' })
   .row.my-3
     .col-3.text-nowrap.py-1
@@ -56,14 +63,12 @@ mixin button(value = 'Save', bClass = 'success' , type = 'submit')
     input(class=`btn btn-block btn-${bClass}` type=`${type}` value= value)
 
 mixin editButton(options = { target: '', id: 0, label: '' })
-  .col-4
-    form(action=urlFor(`${options['target']}`, {id: options['id']}) method='get')
-      button.btn.btn-block.btn-warning(type='submit')= options['label']
+  form(action=urlFor(`${options['target']}`, {id: options['id']}) method='get')
+    button.btn.btn-block.btn-warning(type='submit')= options['label']
 
 mixin deleteButton(options = { target: '', id: 0, label: '' })
-  .col-4
-    form(action=urlFor(`${options['target']}`, {id: options['id']}) method='post')
-      button.btn.btn-block.btn-danger(type='submit' name='_method' value='delete' data-confirm="Are you sure?")= options['label']
+  form(action=urlFor(`${options['target']}`, {id: options['id']}) method='post')
+    button.btn.btn-block.btn-danger(type='submit' name='_method' value='delete' data-confirm="Are you sure?")= options['label']
 
 mixin confirmButton(f, button_label = 'Ok', options = { method: 'get' })
   button.btn.btn-block.btn-success(type='submit' name='_method' value=`${options['method']}`)= button_label

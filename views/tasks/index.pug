@@ -21,6 +21,13 @@ block content
           option All
           each user in users
             option(value= user.id)= user.fullName
+      
+      .form-group.ml-4
+        label.mr-2 Tag:
+        select(name='TaskTag.TagId' class='form-control' value='TaskTag.TaskId')
+          option All
+          each tag in tags
+            option(value= tag.id)= tag.name
           
       .form-group.ml-4
         button(class='btn btn-primary' type='submit')
@@ -52,7 +59,5 @@ block content
               td.text-center= task.creator
               td.text-center= task.createdAt
               td.align-items-center
-                if task.creatorId == signedId()                  
-                  form(method='POST', action=urlFor('tasks#delete', { id: task.id }))
-                    input(type='hidden', name='_method', value='DELETE')
-                    button(type='submit' class='btn btn-danger') Delete
+                if task.creatorId == signedId()
+                  +deleteButton({ target: 'tasks#delete', id: task.id, label: 'Delete Task' })

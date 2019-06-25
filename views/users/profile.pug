@@ -12,5 +12,7 @@ block content
         +smallField({ label: 'E-mail', value: user.email })
         +smallField({ label: 'ID', value: user.id })
         .row.inline.justify-content-center
-          +editButton({ target: 'users#edit', id: user.id, label: 'Edit Profile' })
-          +deleteButton({ target: 'users#delete', id: user.id, label: 'Delete Account' })
+          .col-4
+            +editButton({ target: 'users#edit', id: user.id, label: 'Edit Profile' })
+          .col-4
+            +deleteButton({ target: 'users#delete', id: user.id, label: 'Delete Account' })

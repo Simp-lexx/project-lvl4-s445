@@ -11,12 +11,6 @@ export default (sequelize, DataTypes) => {
     },
     description: {
       type: DataTypes.TEXT,
-      validate: {
-        notEmpty: {
-          args: true,
-          msg: 'Please enter the task description',
-        },
-      },
     },
     StatusId: {
       type: DataTypes.INTEGER,
