@@ -45,6 +45,18 @@ export default (sequelize, DataTypes) => {
     Task.belongsTo(models.Status);
     Task.belongsToMany(models.Tag, { through: 'TaskTag' });
     Task.hasMany(models.Comment);
+    Task.addScope('tags', tags => ({
+      include: [
+        {
+          model: models.Tag,
+          where: {
+            name: {
+              [sequelize.Op.in]: tags,
+            },
+          },
+        },
+      ],
+    }));
   };
   return Task;
 };
