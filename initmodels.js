@@ -1,23 +1,22 @@
-import connect from './database';
-import getModels from './models';
+import {
+  User, Task, Tag, TaskTag, Status, Comment,
+} from './models';
 
 export default async () => {
-  const models = getModels(connect);
+  await Comment.drop();
+  await TaskTag.drop();
+  await Tag.drop();
+  await Task.drop();
+  await Status.drop();
+  await User.drop();
 
-  await models.Comment.drop();
-  await models.TaskTag.drop();
-  await models.Tag.drop();
-  await models.Task.drop();
-  await models.Status.drop();
-  await models.User.drop();
-
-  await models.User.sync({ force: true });
-  await models.Status.sync({ force: true });
-  await models.Task.sync({ force: true });
-  await models.Tag.sync({ force: true });
-  await models.TaskTag.sync({ force: true });
-  await models.Comment.sync({ force: true });
-  await models.Status.bulkCreate([
+  await User.sync({ force: true });
+  await Status.sync({ force: true });
+  await Task.sync({ force: true });
+  await Tag.sync({ force: true });
+  await TaskTag.sync({ force: true });
+  await Comment.sync({ force: true });
+  await Status.bulkCreate([
     { name: 'New' },
     { name: 'In process' },
     { name: 'Testing' },

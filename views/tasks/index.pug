@@ -24,7 +24,7 @@ block content
       
       .form-group.ml-4
         label.mr-2 Tag:
-        select(name='TaskTag.TagId' class='form-control' value='TaskTag.TaskId')
+        select(name='id' class='form-control' value='TagId')
           option All
           each tag in tags
             option(value= tag.id)= tag.name

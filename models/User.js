@@ -65,8 +65,12 @@ export default (sequelize, DataTypes) => {
     },
   });
   User.associate = (models) => {
-    User.hasMany(models.Task, { foreignKey: 'creatorId', as: 'creator' });
-    User.hasMany(models.Task, { foreignKey: 'assignedToId', as: 'assignedTo' });
+    User.hasMany(models.Task, {
+      foreignKey: 'creatorId', as: 'creator', foreignKeyConstraint: false, onDelete: 'cascade',
+    });
+    User.hasMany(models.Task, {
+      foreignKey: 'assignedToId', as: 'assignedTo', foreignKeyConstraint: false, onDelete: 'cascade',
+    });
     User.hasMany(models.Comment);
   };
   return User;

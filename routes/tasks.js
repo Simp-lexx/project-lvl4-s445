@@ -14,11 +14,24 @@ export default (router) => {
       ctx.render('tasks/new', { f: buildFormObj(task), users });
     })
     .get('tasks#list', '/tasks', checkAuth, async (ctx) => {
+      console.log(ctx.request.url);
+      console.log(url.parse(ctx.request.url, true));
       const { query } = url.parse(ctx.request.url, true);
+      console.log(query);
+      // console.log(...query);
       const where = getParams(query);
+      console.log(where);
       const filteredTasks = await Task.findAll({ where });
+      // const scopes = filteredTasks._modelOptions.scopes; // eslint-disable-line
+       // eslint-disable-line
       const tasks = await Promise.all(filteredTasks.map(async task => getData(task)));
+      const scopedModel = await Task.scope(query);
+      const tagsFromTask = await scopedModel.findAll(where);
+      console.log(scopedModel);
+      console.log(tagsFromTask);
+      // console.log(tasks);// console.log(tasks);
       const tags = await Tag.findAll();
+      // console.log(tags);
       const statuses = await Status.findAll();
       const users = await User.findAll();
       ctx.render('tasks/index', {

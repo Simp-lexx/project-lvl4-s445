@@ -1,5 +1,5 @@
 import buildFormObj from '../lib/formObjectBuilder';
-import { User, Task } from '../models';
+import { User } from '../models';
 import { isExist, checkAuth } from '../lib/tools';
 
 export default (router) => {
@@ -57,9 +57,6 @@ export default (router) => {
       if (ctx.state.signedId() === id) {
         User.destroy({
           where: { id },
-        });
-        Task.destroy({
-          where: { creatorId: id },
         });
         ctx.session = {};
         ctx.flash.set('You Account Was Been Deleted.');
