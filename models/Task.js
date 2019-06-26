@@ -39,24 +39,13 @@ export default (sequelize, DataTypes) => {
       },
     },
   });
+
   Task.associate = (models) => {
     Task.belongsTo(models.User, { as: 'creator', foreignKeyConstraint: false, onDelete: 'cascade' });
     Task.belongsTo(models.User, { as: 'assignedTo', foreignKeyConstraint: false, onDelete: 'cascade' });
     Task.belongsTo(models.Status);
     Task.belongsToMany(models.Tag, { through: 'TaskTag' });
     Task.hasMany(models.Comment);
-    Task.addScope('tags', id => ({
-      include: [
-        {
-          model: models.Tag,
-          where: {
-            id: {
-              [sequelize.$eq]: id,
-            },
-          },
-        },
-      ],
-    }));
   };
   return Task;
 };

@@ -24,7 +24,7 @@ block content
       
       .form-group.ml-4
         label.mr-2 Tag:
-        select(name='id' class='form-control' value='TagId')
+        select(name='tagId' class='form-control')
           option All
           each tag in tags
             option(value= tag.id)= tag.name
@@ -34,30 +34,37 @@ block content
           i.mr-1.fa.fa-search
           | Search                  
     
-    h2.text-center.my-4 Tasks     
-    .row.justify-content-center.mt-4
-      table.table.table-stripped 
-        tr
-          th.text-center ID
-          th.text-center Name
-          th.text-center Description
-          th.text-center Status
-          th.text-center Assigned To
-          th.text-center Created By
-          th.text-center Created At
-          th.text-center Delete
+  h2.text-center.my-4 Tasks     
+  .row.justify-content-center.mt-4
+    table.table.table-stripped 
+      tr
+        th.text-center ID
+        th.text-center Name
+        th.text-center Description
+        th.text-center Status
+        th.text-center Assigned To
+        th.text-center Tags
+        th.text-center Created By
+        th.text-center Created At
+        th.text-center Delete
             
-        tbody
-          each task in tasks
-            tr
-              td.text-center= task.id
-              td.text-center
-                a(href=urlFor('tasks#view', { id: task.id }))= task.name
-              td.text-center= task.description 
-              td.text-center= task.status
-              td.text-center= task.assignedTo
-              td.text-center= task.creator
-              td.text-center= task.createdAt
-              td.align-items-center
-                if task.creatorId == signedId()
-                  +deleteButton({ target: 'tasks#delete', id: task.id, label: 'Delete Task' })
+      tbody
+        each task in tasks
+          tr
+            td.text-center= task.id
+            td.text-center
+              a(href=urlFor('tasks#view', { id: task.id }))= task.name
+            td.text-center= task.description 
+            td.text-center= task.status
+            td.text-center= task.assignedTo
+            td
+              form.form-inline(action=urlFor('tasks#list'))
+                each tag in task.tags
+                  .d-inline
+                    a(href=urlFor('tags#view', { id: tag.id }))
+                      .badge.badge-info.p-1.mx-1.h8= tag.name
+            td.text-center= task.creator
+            td.text-center= task.createdAt
+            td.align-items-center
+              if task.creatorId == signedId()
+                +deleteButton({ target: 'tasks#delete', id: task.id, label: 'Delete' })

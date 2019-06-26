@@ -45,13 +45,6 @@ mixin select(f, property, placeholder = property, items)
         - const name = item.name === undefined ? item.fullName : item.name
         option(value=`${item.id}`)= name
 
-mixin filterSelect(options = { name: "", defaultLabel: "", collection: [], property: "" })
-  .col-2
-    select(class='form-control' name=options['name'])
-      option(selected='')= options['defaultLabel']
-        each item in options['collection']
-          option(value= item.id)= item[`${options['property']}`]
-
 mixin smallField(options = { label: '', value: '' })
   .row.my-3
     .col-3.text-nowrap.py-1

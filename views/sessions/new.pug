@@ -2,7 +2,7 @@ extends /layouts/app.pug
 
 block content
   .container
-    h1.text-center.my-5 Log In
+    h1.text-center.my-5 Authentication
     .row.justify-content-center.pb-5
       .col-12.col-lg-4
         +formFor(f, { url: urlFor('sessions#create'), method: 'post' })

@@ -2,9 +2,11 @@ import url from 'url';
 import rollbar from 'rollbar';
 import buildFormObj from '../lib/formObjectBuilder';
 
-import { User, Task, Status, Tag } from '../models'; // eslint-disable-line
+import {
+  User, Task, Status, Tag,
+} from '../models';
 
-import { getData, getParams, checkAuth } from '../lib/tools';
+import { getData, checkAuth, filterTasks } from '../lib/tools';
 
 export default (router) => {
   router
@@ -13,31 +15,18 @@ export default (router) => {
       const users = await User.findAll();
       ctx.render('tasks/new', { f: buildFormObj(task), users });
     })
+
     .get('tasks#list', '/tasks', checkAuth, async (ctx) => {
-      console.log(ctx.request.url);
-      console.log(url.parse(ctx.request.url, true));
       const { query } = url.parse(ctx.request.url, true);
-      console.log(query);
-      // console.log(...query);
-      const where = getParams(query);
-      console.log(where);
-      const filteredTasks = await Task.findAll({ where });
-      // const scopes = filteredTasks._modelOptions.scopes; // eslint-disable-line
-       // eslint-disable-line
-      const tasks = await Promise.all(filteredTasks.map(async task => getData(task)));
-      const scopedModel = await Task.scope(query);
-      const tagsFromTask = await scopedModel.findAll(where);
-      console.log(scopedModel);
-      console.log(tagsFromTask);
-      // console.log(tasks);// console.log(tasks);
+      const tasks = await filterTasks(Task, query);
       const tags = await Tag.findAll();
-      // console.log(tags);
       const statuses = await Status.findAll();
       const users = await User.findAll();
       ctx.render('tasks/index', {
         users, tasks, statuses, tags,
       });
     })
+
     .get('tasks#view', '/tasks/:id', checkAuth, async (ctx) => {
       const taskId = Number(ctx.params.id);
       const userId = Number(ctx.session.userId);
@@ -52,6 +41,7 @@ export default (router) => {
           f: buildFormObj(task), user, task, statuses, tags, comments,
         });
     })
+
     .post('tasks#create', '/tasks', checkAuth, async (ctx) => {
       const { request: { body: form } } = ctx;
       const { userId } = ctx.session;
@@ -71,12 +61,14 @@ export default (router) => {
         ctx.render('tasks/new', { f: buildFormObj(task, e), users });
       }
     })
+
     .patch('tasks#update', '/tasks/:id', checkAuth, async (ctx) => {
       const { statusId, taskId } = ctx.request.body;
       const task = await Task.findByPk(Number(taskId));
       task.setStatus(Number(statusId));
       ctx.redirect(`/tasks/${taskId}`);
     })
+
     .delete('tasks#delete', '/tasks/:id', checkAuth, async (ctx) => {
       const taskId = Number(ctx.params.id);
       Task.destroy({
