@@ -66,7 +66,7 @@ export default (router) => {
       const { statusId, taskId } = ctx.request.body;
       const task = await Task.findByPk(Number(taskId));
       task.setStatus(Number(statusId));
-      ctx.redirect(`/tasks/${taskId}`);
+      ctx.redirect(router.url('tasks#view', taskId));
     })
 
     .delete('tasks#delete', '/tasks/:id', checkAuth, async (ctx) => {

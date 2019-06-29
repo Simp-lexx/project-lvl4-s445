@@ -65,3 +65,7 @@ mixin deleteButton(options = { target: '', id: 0, label: '' })
 
 mixin confirmButton(f, button_label = 'Ok', options = { method: 'get' })
   button.btn.btn-block.btn-success(type='submit' name='_method' value=`${options['method']}`)= button_label
+
+mixin patchButton(options = { target: '', id: 0, label: '' })
+  form(action=urlFor(`${options['target']}`, {id: options['id']}) method='post')
+    button.btn.btn-block.btn-success(type='submit' name='_method' value='patch' data-confirm="You profile will be changed. Are you sure?")= options['label']

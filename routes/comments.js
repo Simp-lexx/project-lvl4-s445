@@ -4,7 +4,7 @@ import { checkAuth } from '../lib/tools';
 
 export default (router) => {
   router
-    .post('comments#new', '/tasks/:id/comments/new', checkAuth, async (ctx) => {
+    .post('comments#new', '/tasks/:id/comments', checkAuth, async (ctx) => {
       const { form } = ctx.request.body;
       form.TaskId = Number(ctx.params.id);
       form.UserId = ctx.session.userId;
@@ -12,9 +12,9 @@ export default (router) => {
       try {
         await comment.save();
         ctx.flash.set('Comment Successfully Added.');
-        ctx.redirect(`/tasks/${form.TaskId}`);
+        ctx.redirect(router.url('tasks#view', form.TaskId));
       } catch (e) {
-        ctx.redirect(`/tasks/${form.TaskId}`, { f: buildFormObj(comment, e) });
+        ctx.redirect(router.url('tasks#view', form.TaskId), { f: buildFormObj(comment, e) });
       }
     });
 };
