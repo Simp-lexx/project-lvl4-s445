@@ -13,6 +13,8 @@ block content
         +smallField({ label: 'ID', value: user.id })
         .row.inline.justify-content-center
           .col-4
-            +editButton({ target: 'users#edit', id: user.id, label: 'Edit Profile' })
+            +formFor(f, { url: urlFor('users#edit', user.id) })
+              +button('Edit Profile', 'warning', 'submit')
           .col-4
-            +deleteButton({ target: 'users#delete', id: user.id, label: 'Delete Account' })
+            +formFor(f, { url: urlFor('users#delete', user.id), method: 'delete', confirm: 'Are you sure want to delete account?' })
+              +button('Delete Account', 'danger', 'submit')

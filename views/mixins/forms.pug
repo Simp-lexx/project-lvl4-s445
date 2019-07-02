@@ -3,8 +3,9 @@
 mixin formFor(f, options = {})
   - const url = _.get(options, 'url');
   - const method = _.get(options, 'method', 'get').toLowerCase();
+  - const confirm = _.get(options, 'confirm');
   - const isStandart = _.includes(['get', 'post'], method);
-  form(action= url method= isStandart ? method : 'post')
+  form(action= url method= isStandart ? method : 'post' data-confirm= confirm)
     if !isStandart
       input(name='_method' type='hidden' value= method)
     block
@@ -54,15 +55,3 @@ mixin smallField(options = { label: '', value: '' })
 mixin button(value = 'Save', bClass = 'success' , type = 'submit')
   .form-group
     input(class=`btn btn-block btn-${bClass}` type=`${type}` value= value)
-
-mixin editButton(options = { target: '', id: 0, label: '' })
-  form(action=urlFor(`${options['target']}`, {id: options['id']}) method='get')
-    button.btn.btn-block.btn-warning(type='submit')= options['label']
-
-mixin deleteButton(options = { target: '', id: 0, label: '' })
-  form(action=urlFor(`${options['target']}`, {id: options['id']}) method='post')
-    button.btn.btn-block.btn-danger(type='submit' name='_method' value='delete' data-confirm="Are you sure?")= options['label']
-
-mixin patchButton(options = { target: '', id: 0, label: '' })
-  form(action=urlFor(`${options['target']}`, {id: options['id']}) method='post')
-    button.btn.btn-block.btn-success(type='submit' name='_method' value='patch' data-confirm="You profile will be changed. Are you sure?")= options['label']
