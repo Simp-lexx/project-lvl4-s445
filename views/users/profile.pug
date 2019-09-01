@@ -16,5 +16,5 @@ block content
             +formFor(f, { url: urlFor('users#edit', user.id) })
               +button('Edit Profile', 'warning', 'submit')
           .col-4
-            +formFor(f, { url: urlFor('users#delete', user.id), method: 'delete', confirm: 'Are you sure want to delete account?' })
-              +button('Delete Account', 'danger', 'submit')
+            a.btn.btn-danger.btn-block(href=urlFor('users#delete', user.id) data-method='delete'
+            rel='nofollow' data-confirm='Are you sure want to delete account?') Delete Account

@@ -67,5 +67,5 @@ block content
             td.text-center= task.createdAt
             td.align-items-center
               if task.creatorId == signedId()
-                +formFor(f, { url: urlFor('tasks#delete', task.id), method: 'delete', confirm: 'Are you sure want to delete this task?' })
-                  +button('Delete Task', 'danger', 'submit')
+                a.btn.btn-danger.btn-block(href=urlFor('tasks#delete', task.id) data-method='delete'
+                rel='nofollow' data-confirm='Are you sure want to delete this task?') Delete
