@@ -86,7 +86,7 @@
     "supertest": "^4.0.2",
     "umzug": "^2.2.0",
     "webpack": "^4.39.3",
-    "webpack-cli": "^3.3.7"
+    "webpack-cli": "^3.3.12"
   },
   "devDependencies": {
     "faker": "^4.1.0",
